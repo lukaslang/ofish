@@ -25,6 +25,10 @@ addpath(genpath(fullfile(libraryPath, 'matlab_xunit\')));
 % Export Figure is required for saving figures.
 addpath(genpath(fullfile(libraryPath, 'visualization\export_fig\')));
 
+% Add OFD.
+ofdPath = 'Z:\git\ofd';
+addpath(genpath(fullfile(ofdPath, 'util\')));
+
 % Add all subfolders.
 y = dir('.');
 y = y([y.isdir]);
