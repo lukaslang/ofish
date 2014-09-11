@@ -69,7 +69,7 @@ for k=1:2*N+1
     assertFalse(isempty(g));
     
     % Plot spherical harmonics.
-    subplot(1, 2*N+1, k);
+    subplot(1, 2 * N + 1, k);
     axis([-1, 1, -1, 1, -1, 1]);
     hold on;
     trisurf(F, V(:, 1), V(:, 2), V(:, 3), f(:, k));
