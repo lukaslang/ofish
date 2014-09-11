@@ -23,6 +23,8 @@ function [xi, w] = triquadrature(deg)
 %   xi is a matrix of size k-by-2 containing barycentric coordinates, where
 %   k is the number of quadrature points and w is a length k vector
 %   containing the weights.
+%
+%   Quadrature rules are taken from http://people.sc.fsu.edu/~jburkardt/datasets/quadrature_rules_tri/quadrature_rules_tri.html
 assert(any(ismember(deg, [1, 7, 15])));
 
 switch(deg)
