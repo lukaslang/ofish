@@ -43,7 +43,7 @@ fq = zeros(m, length(w));
 
 parfor k=1:length(w)
     % Compute determinant of pushforward at quadrature points.
-    detphi = detPushforward(F, V, rho, repmat(xi(k, :), m, 1));
+    detphi = detpushforward(F, V, rho, repmat(xi(k, :), m, 1));
     % Evaluate function.
     fq(:, k) = f(:, k) .* sqrt(abs(detphi));
 end
@@ -51,21 +51,4 @@ end
 % Compute integral.
 v = a' * (fq * w);
 
-end
-
-function detphi = detPushforward(F, V, rho, xiq)
-    % Compute quadrature points on all triangles.
-    xq = trimap(F, V, xiq);
-    
-    % Compute interpolation of rho at quadrature points.
-    rhoq = triinterp2(rho, xiq);
-    
-    % Compute gradient of rho at quadrature points.
-    [gradr, ~, ~] = trigradp2(F, V, rho, xiq);
-    
-    % Compute determinant of pushforward.
-    detphi1 = (rhoq + xq(:, 1).*gradr(:, 1)).*((rhoq + xq(:, 2).*(gradr(:, 2))).*(rhoq + xq(:, 3).*gradr(:, 3)) - xq(:, 2).*xq(:, 3).*gradr(:, 2).*gradr(:, 3));
-    detphi2 = xq(:, 1).*gradr(:, 2).*(xq(:, 2).*gradr(:, 1).*(rhoq + xq(:, 3).*gradr(:, 3)) - xq(:, 2).*xq(:, 3).*gradr(:, 1).*gradr(:, 2));
-    detphi3 = xq(:, 1).*gradr(:, 3).*(xq(:, 2).*xq(:, 3).*gradr(:, 1).*gradr(:, 3) - xq(:, 3).*gradr(:, 1).*(rhoq + xq(:, 2).*gradr(:, 2)));
-    detphi = detphi1 - detphi2 + detphi3;
 end
