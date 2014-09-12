@@ -28,7 +28,7 @@ function [gradf, u, v] = trigradp2(F, V, f, xi)
 %   six quadrature points and xi is of size m-by-2. m is the number of
 %   triangles.
 %
-%   Note that size(gradf) = [m, 2].
+%   Note that size(gradf) = [m, 3].
 
 assert(size(f, 1) == size(F, 1));
 assert(size(f, 1) == size(xi, 1));

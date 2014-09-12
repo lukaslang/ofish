@@ -39,3 +39,4 @@ cellfun(@(x) addpath(genpath(fullfile(pwd, x))), {y.name});
 % Clean up.
 clear y;
 clear libraryPath;
+clear ofdPath;
