@@ -27,7 +27,9 @@ addpath(genpath(fullfile(libraryPath, 'visualization\export_fig\')));
 
 % Add OFD.
 ofdPath = 'Z:\git\ofd';
+addpath(ofdPath);
 addpath(genpath(fullfile(ofdPath, 'util\')));
+addpath(genpath(fullfile(ofdPath, 'colourwheel\')));
 
 % Add all subfolders.
 y = dir('.');
