@@ -30,18 +30,49 @@ rho = ones(m, 6);
 
 % Get quadrature rule.
 [xi, w] = triquadrature(1);
+xi = repmat(permute(xi, [3, 2, 1]), [m, 1, 1]);
 
 % Evaluate constant function at quadrature points.
-f = ones(m, length(w));
+detphi = detpushforward(F, V, rho, xi);
+f = ones(m, length(w)) .* sqrt(abs(detphi));
 
 % Compute triangle area.
 a = triangArea(F, V);
 
 % Compute integral.
-v = surfintegral(F, V, rho, f, xi, w, a);
+v = surfintegral(f, w, a);
 
 assertTrue(isscalar(v));
 assertAlmostEqual(v, 0.5);
+
+end
+
+function higherQuadratureTest
+
+% Create reference triangle.
+F = [1, 2, 3; 2, 4, 3];
+V = [0, 0, 0; 0, 1, 0; 1, 0, 0; 1, 1, 0];
+m = size(F, 1);
+
+% Generate constant function rho.
+rho = ones(m, 6);
+
+% Get quadrature rule.
+[xi, w] = triquadrature(7);
+xi = repmat(permute(xi, [3, 2, 1]), [m, 1, 1]);
+
+% Evaluate constant function at quadrature points.
+detphi = detpushforward(F, V, rho, xi);
+f = ones(m, length(w)) .* sqrt(abs(detphi));
+
+% Compute triangle area.
+a = triangArea(F, V);
+
+% Compute integral.
+v = surfintegral(f, w, a);
+
+assertTrue(isscalar(v));
+assertAlmostEqual(v, 1, 1e-6);
 
 end
 
@@ -57,15 +88,17 @@ rho = ones(m, 6);
 
 % Get quadrature rule.
 [xi, w] = triquadrature(1);
+xi = repmat(permute(xi, [3, 2, 1]), [m, 1, 1]);
 
 % Evaluate constant function at quadrature points.
-f = ones(m, length(w));
+detphi = detpushforward(F, V, rho, xi);
+f = ones(m, length(w)) .* sqrt(abs(detphi));
 
 % Compute triangle area.
 a = triangArea(F, V);
 
 % Compute integral.
-v = surfintegral(F, V, rho, f, xi, w, a);
+v = surfintegral(f, w, a);
 
 assertTrue(isscalar(v));
 assertAlmostEqual(v, 2);
@@ -83,15 +116,17 @@ rho = ones(m, 6);
 
 % Get quadrature rule.
 [xi, w] = triquadrature(1);
+xi = repmat(permute(xi, [3, 2, 1]), [m, 1, 1]);
 
-% Generate constant data function.
-f = ones(m, length(w));
+% Evaluate constant function at quadrature points.
+detphi = detpushforward(F, V, rho, xi);
+f = ones(m, length(w)) .* sqrt(abs(detphi));
 
 % Compute triangle area.
 a = triangArea(F, V);
 
 % Compute surface integral over function which is constant one.
-v = surfintegral(F, V, rho, f, xi, w, a);
+v = surfintegral(f, w, a);
 
 assertTrue(isscalar(v));
 assertAlmostEqual(v, 4*pi, 1e-2);
@@ -116,15 +151,17 @@ end
 
 % Get quadrature rule.
 [xi, w] = triquadrature(1);
+xi = repmat(permute(xi, [3, 2, 1]), [m, 1, 1]);
 
-% Generate constant data function.
-f = ones(m, length(w));
+% Evaluate constant function at quadrature points.
+detphi = detpushforward(F, V, rho, xi);
+f = ones(m, length(w)) .* sqrt(abs(detphi));
 
 % Compute triangle area.
 a = triangArea(F, V);
 
 % Compute surface integral over function which is constant one.
-v = surfintegral(F, V, rho, f, xi, w, a);
+v = surfintegral(f, w, a);
 
 assertTrue(isscalar(v));
 assertAlmostEqual(v, 4*pi*radius^2, 1e-2);
@@ -149,15 +186,17 @@ end
 
 % Get quadrature rule.
 [xi, w] = triquadrature(1);
+xi = repmat(permute(xi, [3, 2, 1]), [m, 1, 1]);
 
-% Generate constant data function.
-f = ones(m, length(w));
+% Evaluate constant function at quadrature points.
+detphi = detpushforward(F, V, rho, xi);
+f = ones(m, length(w)) .* sqrt(abs(detphi));
 
 % Compute triangle area.
 a = triangArea(F, V);
 
 % Compute surface integral over function which is constant one.
-vq = surfintegral(F, V, rho, f, xi, w, a);
+vq = surfintegral(f, w, a);
 assertTrue(isscalar(vq));
 
 vl = triangIntegral(F, V, ones(m, 1), a);

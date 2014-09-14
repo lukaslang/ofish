@@ -14,41 +14,24 @@
 %
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
-function v = surfintegral(F, V, rho, f, xi, w, a)
+function v = surfintegral(f, w, a)
 %SURFINTEGRAL Computes the surface integral on a sphere-like surface.
 %
-%   v = SURFINTEGRAL(F, V, rho, f, xi, w, a) takes a triangulation F, V, a
-%   function rho evaluated at nodal points, a function f evaluated at the
-%   quadrature points xi at every triangle, and weights w and returns the
-%   value of the integral. a is a vector containing the areas of the 
-%   triangles F.
+%   v = SURFINTEGRAL(f, w, a) takes a function evaluated at quadrature 
+%   points, weights w, and triangular area a and returns the value of the 
+%   integral.
 %
-%   Note that xi must be of size k-by-2 and w of length k, where k is the 
-%   number of quadrature points.
+%   Note that f must be of size [m, nq], where nq is the length of vector 
+%   w. a must be a vector of length m.
 %
-%   rho must be of size m-by-6, where m is the number of triangular faces.
-%   f must be of size m-by-k. a must be a vector of length m.
-m = size(F, 1);
-assert(size(rho, 1) == m);
-assert(size(rho, 2) == 6);
-assert(size(f, 1) == m);
-assert(size(f, 2) == length(w));
-assert(size(xi, 1) == length(w));
-assert(size(xi, 2) == 2);
-assert(isvector(a));
-assert(length(a) == m);
+%   Note that assertions have been turned off for efficiency!
 
-% Values of integral at quadrature points.
-fq = zeros(m, length(w));
-
-parfor k=1:length(w)
-    % Compute determinant of pushforward at quadrature points.
-    detphi = detpushforward(F, V, rho, repmat(xi(k, :), m, 1));
-    % Evaluate function.
-    fq(:, k) = f(:, k) .* sqrt(abs(detphi));
-end
+% assert(size(f, 1) == length(a));
+% assert(size(f, 2) == length(w));
+% assert(isvector(a));
+% assert(isvector(w));
 
 % Compute integral.
-v = a' * (fq * w);
+v = a' * (f * w);
 
 end

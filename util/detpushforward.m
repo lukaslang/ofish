@@ -22,12 +22,10 @@ function detphi = detpushforward(F, V, rho, xi)
 %   function rho defining a sphere-like surface and returns the determinant
 %   if the pushforward phi at given barycentric coordinates xi.
 %
-%   Note that xi must be of size m-by-3, where m is the number of
-%   triangular faces.
+%   Note that xi must be of size [m, 2, nq], where m is the number of
+%   triangular faces and nq the number of quadrature points.
 %
 %   v is a vector of length m.
-
-nq = size(xi, 3);
 
 % Compute points on triangles.
 x = trimap(F, V, xi);
