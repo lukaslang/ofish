@@ -56,3 +56,36 @@ g = triinterp2(f, xi);
 assertAlmostEqual(g, ones(20, 1));
 
 end
+
+function thirdDimensionTest
+
+% Generate icosahedron.
+[F, V] = sphTriang;
+assertFalse(isempty(F));
+assertFalse(isempty(V));
+assertEqual(size(F), [20, 3]);
+assertEqual(size(V), [12, 3]);
+
+% Create sample function.
+f = ones(20, 6);
+
+% Define centroids in barycentric coordinates.
+xi = repmat([1/3, 1/3], [20, 1, 1]);
+
+% Compute interpolation at xi.
+g = triinterp2(f, xi);
+assertFalse(isempty(g));
+assertEqual(size(g), [20, 1]);
+assertAlmostEqual(g, ones(20, 1));
+
+xi(:, :, 1) = repmat([0, 0], 20, 1);
+xi(:, :, 2) = repmat([1, 0], 20, 1);
+xi(:, :, 3) = repmat([0, 1], 20, 1);
+
+% Compute interpolation at xi.
+g = triinterp2(f, xi);
+assertAlmostEqual(g(:, 1), ones(20, 1));
+assertAlmostEqual(g(:, 2), ones(20, 1));
+assertAlmostEqual(g(:, 3), ones(20, 1));
+
+end

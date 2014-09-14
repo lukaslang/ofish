@@ -35,6 +35,18 @@ assertEqual(size(Y1), [n, 2*N + 1, 3]);
 assertFalse(isempty(Y2));
 assertEqual(size(Y2), [n, 2*N + 1, 3]);
 
+% Pick coordinates.
+nq = 3;
+xi = repmat([1/3, 1/3], [n, 1, nq]);
+
+% Create spherical harmonics.
+N = 5;
+[Y1, Y2] = trivspharm(N, F, V, xi);
+assertFalse(isempty(Y1));
+assertEqual(size(Y1), [n, 2*N + 1, 3, nq]);
+assertFalse(isempty(Y2));
+assertEqual(size(Y2), [n, 2*N + 1, 3, nq]);
+
 end
 
 function orthogonalityTest

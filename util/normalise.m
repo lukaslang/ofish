@@ -17,7 +17,7 @@
 function V = normalise(V)
 %NORMALISE Normalises row vectors.
 %
-%   V = normalise(V) takes a n-by-3 matrix V and returns normalises row
+%   V = normalise(V) takes an n-by-3 matrix V and returns normalises row
 %   vectors.
 
 len = sqrt(sum(V.^2, 2));

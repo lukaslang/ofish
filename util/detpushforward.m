@@ -27,6 +27,8 @@ function detphi = detpushforward(F, V, rho, xi)
 %
 %   v is a vector of length m.
 
+nq = size(xi, 3);
+
 % Compute points on triangles.
 x = trimap(F, V, xi);
 
@@ -37,6 +39,6 @@ rhoq = triinterp2(rho, xi);
 [gradr, ~, ~] = trigradp2(F, V, rho, xi);
 
 % Compute determinant of pushforward.
-detphi = rhoq.^3 + rhoq.^2 .* dot(x, gradr, 2);
+detphi = rhoq.^3 + rhoq.^2 .* squeeze(dot(x, gradr, 2));
 
 end

@@ -40,3 +40,21 @@ assertEqual(size(x), [m, 3]);
 assertAlmostEqual(x, V(F(:, 2), :));
 
 end
+
+function quadratureDimTest
+
+% Generate icosahedron.
+[F, V] = sphTriang;
+m = size(F, 1);
+
+xi(:, :, 1) = zeros(m, 2);
+xi(:, :, 2) = [ones(m, 1), zeros(m, 1)];
+xi(:, :, 3) = [zeros(m, 1), ones(m, 1)];
+x = trimap(F, V, xi);
+assertFalse(isempty(x));
+assertEqual(size(x), [m, 3, 3]);
+assertAlmostEqual(x(:, :, 1), V(F(:, 1), :));
+assertAlmostEqual(x(:, :, 2), V(F(:, 3), :));
+assertAlmostEqual(x(:, :, 3), V(F(:, 2), :));
+
+end

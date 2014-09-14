@@ -22,16 +22,18 @@ function x = trimap(F, V, xi)
 %
 %   Vertices are assumed in clockwise order.
 %
-%   Note that xi must be of size m-by-3, where m is the number of
-%   triangular faces.
+%   Note that xi must be of size [m, 3, nq], where m is the number of
+%   triangular faces and nq the number of quadrature points.
 %
-%   x is a matrix of size m-by-3.
+%   x is a matrix of size [m, 3, nq].
+
+nq = size(xi, 3);
 
 % Compute vectors.
-u = bsxfun(@times, xi(:, 1), V(F(:, 3), :) - V(F(:, 1), :));
-v = bsxfun(@times, xi(:, 2), V(F(:, 2), :) - V(F(:, 1), :));
+u = bsxfun(@times, xi(:, 1, :), V(F(:, 3), :) - V(F(:, 1), :));
+v = bsxfun(@times, xi(:, 2, :), V(F(:, 2), :) - V(F(:, 1), :));
 
 % Compute points.
-x = V(F(:, 1), :) + u + v;
+x = repmat(V(F(:, 1), :), [1, 1, nq]) + u + v;
 
 end

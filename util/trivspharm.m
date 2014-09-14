@@ -24,7 +24,7 @@ function [Y1, Y2] = trivspharm(N, F, V, xi)
 %   Y_Nj of degree N > 0 and j=-N,...,N at barycentric coordinates xi.
 %
 %   Note that size(Yi) = [m, 2*N + 1, 3] for i={1, 2}, where m is the
-%   number of faces F. xi must be of size [m, 2].
+%   number of faces F. xi must be of size [m, 2, nq].
 
 assert(isscalar(N));
 assert(N > 0);
@@ -34,6 +34,7 @@ assert(size(xi, 1) == size(F, 1));
 assert(size(xi, 2) == 2);
 
 m = size(F, 1);
+nq = size(xi, 3);
 
 % Compute face normals.
 Fn = facenormals(F, V);
@@ -46,11 +47,13 @@ for k=1:size(Vn, 3)
 end
 
 % Compute vector spherical harmonics.
-Y1 = zeros(m, 2*N + 1, 3);
-Y2 = zeros(m, 2*N + 1, 3);
-for k=1:2*N+1
-    Y1(:, k, :) = trigradp2(F, V, squeeze(Ynj(:, k, :)), xi);
-    Y2(:, k, :) = cross(squeeze(Y1(:, k, :)), Fn);
+Y1 = zeros(m, 2*N + 1, 3, nq);
+Y2 = zeros(m, 2*N + 1, 3, nq);
+for q=1:nq
+    for k=1:2*N+1
+        Y1(:, k, :, q) = trigradp2(F, V, squeeze(Ynj(:, k, :)), xi(:, :, q));
+        Y2(:, k, :, q) = cross(squeeze(Y1(:, k, :, q)), Fn);
+    end
 end
 
 % Normalise.

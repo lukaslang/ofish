@@ -38,6 +38,15 @@ g = trigradp2(F, V, f, xi);
 assertFalse(isempty(g));
 assertEqual(size(g), [20, 3]);
 
+% Define centroids.
+nq = 3;
+xi = repmat([1/3, 1/3], [20, 1, nq]);
+
+% Compute gradient.
+g = trigradp2(F, V, f, xi);
+assertFalse(isempty(g));
+assertEqual(size(g), [20, 3, nq]);
+
 end
 
 function visualiseTest

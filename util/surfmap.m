@@ -24,10 +24,11 @@ function x = surfmap(F, V, rho, xi)
 %
 %   Vertices are assumed in clockwise order.
 %
-%   Note that xi must be of size m-by-3, where m is the number of
-%   triangular faces. rho must be of size m-by-6.
+%   Note that xi must be of size [m, 3, nq], where m is the number of
+%   triangular faces and nq the number of quadrature points. rho must be of
+%   size [m, 6].
 %
-%   x is a matrix of size m-by-3.
+%   x is a matrix of size [m, 3, nq].
 
 % Compute intermediate points on triangulated surface.
 x = trimap(F, V, xi);

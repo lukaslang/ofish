@@ -23,11 +23,13 @@ function Z = trivspharmdot(v, F, V, N, xi)
 %   coordinates xi and returns the dot product between v and vector 
 %   spherical harmonics of degrees N.
 %
-%   Note that xi must be a matrix of size m-by-2, where m is the number of
-%   triangular faces size(F, 1).
+%   Note that xi must be a matrix of size [m, 2, nq], where m is the number
+%   of triangular faces size(F, 1) and nq is the number of quadrature
+%   points.
 %
-%   Z is of size [m, dim], where dim is the dimension induced by the given 
-%   degrees N, which must be a vector of consecutive positive integers.
+%   Z is of size [m, dim, nq], where dim is the dimension induced by the 
+%   given degrees N, which must be a vector of consecutive positive 
+%   integers.
 %
 %   Note that parallelisation was chosen this way since for each k the
 %   number of dot products to calculate is 2*(2*k+1). Each of the 2*k+1
@@ -44,6 +46,8 @@ assert(all(N > 0));
 assert(length(N) == N(end) - N(1) + 1);
 assert(all((N == (N(1):N(end)))));
 
+nq = size(xi, 3);
+
 % Compute dimension.
 dim = 2*(N(end)^2 + 2*N(end) - N(1)^2 + 1);
 
@@ -51,21 +55,23 @@ dim = 2*(N(end)^2 + 2*N(end) - N(1)^2 + 1);
 offset = (N(1)-1)^2 + 2*(N(1)-1);
 
 % Compute dot products.
-Z = zeros(size(F, 1), dim);
+Z = zeros(size(F, 1), dim, nq);
 for k=N
     % Create vector spherical harmonics of degree k.
     [Y1, Y2] = trivspharm(k, F, V, xi);
-        
-    % Compute index.
-    idx = k^2 - offset - 1;
-    % Run through all orders.
-    parfor l=1:2*k+1
-        Z(:, idx + l) = dot(v, squeeze(Y1(:, l, :)), 2);
-    end
-    % Create indices.
-    idx = idx + dim/2;
-    parfor l=1:2*k+1
-        Z(:, idx + l) = dot(v, squeeze(Y2(:, l, :)), 2);
+    % Run through quadrature dimension.
+    for q=1:nq
+        % Compute index.
+        idx = k^2 - offset - 1;
+        % Run through all orders.
+        parfor l=1:2*k+1
+            Z(:, idx + l, q) = dot(v, squeeze(Y1(:, l, :, q)), 2);
+        end
+        % Create indices.
+        idx = idx + dim/2;
+        parfor l=1:2*k+1
+            Z(:, idx + l, q) = dot(v, squeeze(Y2(:, l, :, q)), 2);
+        end
     end
 end
 end

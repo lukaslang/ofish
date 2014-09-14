@@ -33,3 +33,20 @@ assertFalse(isempty(detphi));
 assertAlmostEqual(detphi, ones(m, 1));
 
 end
+
+function quadratureDimTest
+
+% Generate icosahedron.
+[F, V] = sphTriang;
+m = size(F, 1);
+
+nq = 3;
+xi = repmat([1/3, 1/3], [m, 1, nq]);
+
+% Check with constant function rho.
+rho = ones(m, 6);
+detphi = detpushforward(F, V, rho, xi);
+assertFalse(isempty(detphi));
+assertAlmostEqual(detphi, ones(m, nq));
+
+end

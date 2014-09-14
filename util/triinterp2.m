@@ -23,19 +23,22 @@ function g = triinterp2(f, xi)
 %   given in barycentric coordinates.
 %
 %   Note that f must be of size m-by-6 where each row corresponds to the
-%   six quadrature points and xi is of size m-by-2. m is the number of
-%   triangles.
+%   six quadrature points and xi is of size m-by-2-by-nq, where m is the 
+%   number of triangles and nq the number of quadrature points.
 %
-%   Note that g is a vector and is of length m.
+%   Note that g is a matrix of size [m, nq].
 
-assert(size(f, 1) == size(xi, 1));
+m = size(xi, 1);
+nq = size(xi, 3);
+assert(size(f, 1) == m);
 assert(size(f, 2) == 6);
 assert(size(xi, 2) == 2);
 
-% Compute polynomials at xi.
-[A, Q] = tripoly2(xi);
-
-% Compute interpolation.
-g = dot(f, (A * Q)', 2);
-
+g = zeros(m, nq);
+parfor k=1:nq
+    % Compute polynomials at xi.
+    [A, Q] = tripoly2(xi(:, :, k));
+    % Compute interpolation.
+    g(:, k) = dot(f, (A * Q)', 2);
+end
 end
