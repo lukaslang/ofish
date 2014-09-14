@@ -30,3 +30,14 @@ Vn = normalise(bsxfun(@times, V, rand(size(V, 1), 1)));
 assertAlmostEqual(Vn, V);
 
 end
+
+function quadratureDimensionTest
+
+% Generate icosahedron.
+[~, V] = sphTriang;
+
+nq = 5;
+Vn = normalise(repmat(V, [1, 1, nq]));
+assertAlmostEqual(Vn, repmat(V, [1, 1, nq]));
+
+end

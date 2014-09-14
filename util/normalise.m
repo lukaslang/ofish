@@ -17,8 +17,8 @@
 function V = normalise(V)
 %NORMALISE Normalises row vectors.
 %
-%   V = normalise(V) takes an n-by-3 matrix V and returns normalises row
-%   vectors.
+%   V = normalise(V) takes an [n, 3, nq] matrix V and returns normalises 
+%   row vectors for each V(:, :, q).
 
 len = sqrt(sum(V.^2, 2));
 V = bsxfun(@rdivide, V, len);
