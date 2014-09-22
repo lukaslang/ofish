@@ -39,7 +39,7 @@ detg = g(:, 1, 1) .* g(:, 2, 2) - g(:, 1, 2) .^2;
 % Compute inverse.
 ginv(:, 1, 1) = g(:, 2, 2);
 ginv(:, 1, 2) = -g(:, 1, 2);
-ginv(:, 2, 1) = ginv(:, 1, 2);
+ginv(:, 2, 1) = -g(:, 2, 1);
 ginv(:, 2, 2) = g(:, 1, 1);
 ginv = bsxfun(@rdivide, ginv, detg);
 

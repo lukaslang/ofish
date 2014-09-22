@@ -73,7 +73,7 @@ for q=1:nq
     % Compute partial derivatives of polynomials at xi.
     [DxA, DyA, Q] = tripoly2deriv(xi(:, :, q));
     % Compute second partial derivatives of polynomials at xi.
-    [DxDxA, DxDyA, DyDyA, ~] = tripoly2deriv2(xi(:, :, q));
+    [DxDxA, DyDxA, DxDyA, DyDyA, ~] = tripoly2deriv2(xi(:, :, q));
     for k=1:2*N+1
         f = squeeze(Ynj(:, k, :));    
         % Compute partial derivative of interpolation.
@@ -86,15 +86,16 @@ for q=1:nq
         
         % Compute second partial derivatives of interpolation.
         DxDxf = dot(f, (DxDxA * Q)', 2);
+        DyDxf = dot(f, (DyDxA * Q)', 2);
         DxDyf = dot(f, (DxDyA * Q)', 2);
         DyDyf = dot(f, (DyDyA * Q)', 2);
         
         % Compute derivatives.
         DxY1(:, k, :, q) = [ginv11 .* DxDxf + ginv21 .* DxDyf, ginv12 .* DxDxf + ginv22 .* DxDyf];
-        DyY1(:, k, :, q) = [ginv11 .* DxDyf + ginv21 .* DyDyf, ginv12 .* DxDyf + ginv22 .* DyDyf];
+        DyY1(:, k, :, q) = [ginv11 .* DyDxf + ginv21 .* DyDyf, ginv12 .* DyDxf + ginv22 .* DyDyf];
         
         DxY2(:, k, :, q) = [bsxfun(@rdivide, DxDyf, 2 * a), bsxfun(@rdivide, -DxDxf, 2 * a)];
-        DyY2(:, k, :, q) = [bsxfun(@rdivide, DyDyf, 2 * a), bsxfun(@rdivide, -DxDyf, 2 * a)];
+        DyY2(:, k, :, q) = [bsxfun(@rdivide, DyDyf, 2 * a), bsxfun(@rdivide, -DyDxf, 2 * a)];
     end
 end
 
