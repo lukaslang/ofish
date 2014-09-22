@@ -37,18 +37,18 @@ assert(size(xi, 2) == 2);
 nq = size(xi, 3);
 m = size(F, 1);
 
+% Compute triangulated surface properties.
+[Dx, Dy] = tritanBasis(F, V);
+
+% Compute metric properties.
+[~, ~, ginv] = metricprops(Dx, Dy);
+
 gradf = zeros(m, 3, nq);
 u = zeros(m, nq);
 v = zeros(m, nq);
-parfor q=1:nq
+for q=1:nq
     % Compute derivatives of polynomials at xi.
-    [DxA, DyA, Q] = tripoly2deriv(xi);
-
-    % Compute triangulated surface properties.
-    [Dx, Dy] = tritanBasis(F, V);
-
-    % Compute metric properties.
-    [~, ~, ginv] = metricprops(Dx, Dy);
+    [DxA, DyA, Q] = tripoly2deriv(xi(:, :, q));
 
     % Compute partial derivative of interpolation.
     Dxf = dot(f, (DxA * Q)', 2);

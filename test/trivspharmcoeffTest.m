@@ -22,18 +22,38 @@ function resultTest
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
-n = size(F, 1);
+m = size(F, 1);
 
 % Pick coordinates.
-xi = repmat([1/3, 1/3], n, 1);
+xi = repmat([1/3, 1/3], m, 1);
 
 % Create spherical harmonics.
 N = 5;
 [Y1, Y2] = trivspharmcoeff(N, F, V, xi);
 assertFalse(isempty(Y1));
-assertEqual(size(Y1), [n, 2*N + 1, 2]);
+assertEqual(size(Y1), [m, 2*N + 1, 2]);
 assertFalse(isempty(Y2));
-assertEqual(size(Y2), [n, 2*N + 1, 2]);
+assertEqual(size(Y2), [m, 2*N + 1, 2]);
+
+end
+
+function quadratureDimensionTest
+
+% Create triangulation of unit sphere.
+[F, V] = sphTriang(3);
+m = size(F, 1);
+
+% Pick coordinates.
+nq = 5;
+xi = repmat([1/3, 1/3], [m, 1, nq]);
+
+% Create spherical harmonics.
+N = 5;
+[Y1, Y2] = trivspharmcoeff(N, F, V, xi);
+assertFalse(isempty(Y1));
+assertEqual(size(Y1), [m, 2*N + 1, 2, nq]);
+assertFalse(isempty(Y2));
+assertEqual(size(Y2), [m, 2*N + 1, 2, nq]);
 
 end
 
@@ -41,10 +61,10 @@ function orthogonalityTest
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
-n = size(F, 1);
+m = size(F, 1);
 
 % Pick coordinates.
-xi = repmat([1/3, 1/3], n, 1);
+xi = repmat([1/3, 1/3], m, 1);
 
 % Create spherical harmonics.
 N = 5;
@@ -61,7 +81,7 @@ end
 
 % Compute R3 inner product.
 ip = dot(Y1, Y2, 3);
-assertAlmostEqual(ip, zeros(n, 2*N + 1));
+assertAlmostEqual(ip, zeros(m, 2*N + 1));
 
 end
 
@@ -69,19 +89,19 @@ function visualiseTest
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
-n = size(F, 1);
+m = size(F, 1);
 
 % Pick coordinates.
-xi = repmat([1/3, 1/3], n, 1);
+xi = repmat([1/3, 1/3], m, 1);
 x = trimap(F, V, xi);
 
 % Create spherical harmonics.
 N = 3;
 [Y1c, Y2c] = trivspharmcoeff(N, F, V, xi);
 assertFalse(isempty(Y1c));
-assertEqual(size(Y1c), [n, 2*N + 1, 2]);
+assertEqual(size(Y1c), [m, 2*N + 1, 2]);
 assertFalse(isempty(Y2c));
-assertEqual(size(Y2c), [n, 2*N + 1, 2]);
+assertEqual(size(Y2c), [m, 2*N + 1, 2]);
 
 % Compute tangent basis.
 [Dx, Dy] = tritanBasis(F, V);

@@ -68,15 +68,15 @@ m = size(F, 1);
 a = triangArea(F, V);
 
 % Pick coordinates.
-nq = 3;
+nq = 6;
 xi = repmat([1/3, 1/3], [m, 1, nq]);
 
 % Arbitrary vector spherical harmonics.
 deg = 1;
 ord = 1;
 [Y1, Y2] = trivspharm(deg, F, V, xi);
-Y1nj = squeeze(Y1(:, ord, :, 1));
-Y2nj = squeeze(Y2(:, ord, :, 1));
+Y1nj = squeeze(Y1(:, ord, :, :));
+Y2nj = squeeze(Y2(:, ord, :, :));
 
 % Compute dot product with vector spherical harmonics of degrees N.
 N = 1;

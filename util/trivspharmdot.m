@@ -15,17 +15,19 @@
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
 function Z = trivspharmdot(v, F, V, N, xi)
-%TRIVSPHARMDOT Computes the dot product between the gradient of f and
-%vector spherical harmonics.
+%TRIVSPHARMDOT Computes the dot product between a vector field and vector 
+%spherical harmonics of multiple degrees.
 %
-%   Z = TRIVSPHARMDOT(v, F, V, N, f, xi) takes a vector field v at xi, a 
-%   triangulation F, V of the unit sphere, degrees N, and barycentric 
-%   coordinates xi and returns the dot product between v and vector 
+%   Z = TRIVSPHARMDOT(v, F, V, N, xi) takes a vector field v at xi, a 
+%   triangulation F, V of the unit sphere, degrees N, barycentric 
+%   coordinates xi and returns the dot product between v and all vector 
 %   spherical harmonics of degrees N.
 %
 %   Note that xi must be a matrix of size [m, 2, nq], where m is the number
 %   of triangular faces size(F, 1) and nq is the number of quadrature
 %   points.
+%   
+%   Note that v must be of size [m, 3, nq].
 %
 %   Z is of size [m, dim, nq], where dim is the dimension induced by the 
 %   given degrees N, which must be a vector of consecutive positive 
@@ -39,6 +41,7 @@ assert(size(F, 2) == 3);
 assert(size(V, 2) == 3);
 assert(size(v, 2) == 3);
 assert(size(v, 1) == size(F, 1));
+assert(size(v, 3) == size(xi, 3));
 
 % Check if N is an interval of positive consecutive integers.
 assert(isvector(N));
@@ -61,16 +64,17 @@ for k=N
     [Y1, Y2] = trivspharm(k, F, V, xi);
     % Run through quadrature dimension.
     for q=1:nq
+        vq = v(:, :, q);        
         % Compute index.
         idx = k^2 - offset - 1;
         % Run through all orders.
         parfor l=1:2*k+1
-            Z(:, idx + l, q) = dot(v, squeeze(Y1(:, l, :, q)), 2);
+            Z(:, idx + l, q) = dot(vq, squeeze(Y1(:, l, :, q)), 2);
         end
         % Create indices.
         idx = idx + dim/2;
         parfor l=1:2*k+1
-            Z(:, idx + l, q) = dot(v, squeeze(Y2(:, l, :, q)), 2);
+            Z(:, idx + l, q) = dot(vq, squeeze(Y2(:, l, :, q)), 2);
         end
     end
 end
