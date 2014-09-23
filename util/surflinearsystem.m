@@ -70,9 +70,6 @@ dfdt = triinterp2((f2 - f1) ./ h, xi);
 % Compute surface gradient of first image.
 gradf = trigradp2(F, V, f1, xi);
 
-% Evaluate dot product between grad f1 and vspharm.
-Z = trivspharmdot(gradf, F, V, N, xi);
-
 % Compute rho at nodal points.
 Vn = normalise(trinodalpts2(F, V));
 [~, rho] = surfsynth(Ns, Vn, c);
@@ -80,8 +77,33 @@ Vn = normalise(trinodalpts2(F, V));
 % Compute determinant of pushforward at quadrature points.
 detphi = detpushforward(F, V, rho, xi);
 
+% Find indices where grad f is greater than epsilon. In areas where the
+% length of the image gradient is almost zero inner products and thus
+% surface integrals will be alomost zeros and thus can be excluded from
+% numerical integration.
+idx = any(sqrt(sum(gradf.^2, 2)) > tol, 3);
+
+% Return all zero matrices if no data given.
+if(numel(find(idx)) == 0)
+    A = sparse([], [], [], dim, dim);
+    D = A;
+    b = sparse([], [], [], dim, 1);
+    return;
+end
+
+% Constrain data.
+Fc = F(idx, :);
+gradfc = gradf(idx, :, :);
+ac = a(idx);
+dfdtc = dfdt(idx, :);
+xic = xi(idx, :, :);
+detphic = detphi(idx, :);
+
+% Evaluate dot product between grad f1 and vspharm.
+Z = trivspharmdot(gradfc, Fc, V, N, xic);
+
 % Create matrix A.
-A = matrixA(dim, Z, detphi, w, a);
+A = matrixA(dim, Z, detphic, w, ac);
 
 % Compute Christoffel symbols.
 G = surfchristoffel(F, V, rho, xi);
@@ -118,7 +140,7 @@ D = matrixD(dim, Z11, Z12, Z21, Z22, detphi, w, a);
 % Create vector b.
 b = zeros(dim, 1);
 parfor k=1:dim
-    b(k) = - surfintegral(dfdt .* squeeze(Z(:, k, :)) .* sqrt(abs(detphi)), w, a);
+    b(k) = - surfintegral(dfdtc .* squeeze(Z(:, k, :)) .* sqrt(abs(detphic)), w, ac);
 end
 
 end

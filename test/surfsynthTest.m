@@ -115,12 +115,7 @@ assertFalse(isempty(c));
 assertFalse(isempty(Y));
 
 % Compute synthesis from scratch.
-[S, rho1] = surfsynth(Ns, V, c);
-
-% Compute synthesis with Y.
-[SY, rho2] = surfsynth(Ns, V, c, Y);
-assertAlmostEqual(S, SY);
-assertAlmostEqual(rho1, rho2);
+[S, rho] = surfsynth(Ns, V, c);
 
 % Check if points are still on unit sphere.
 len = sqrt(sum(S .^ 2, 2));
@@ -130,7 +125,6 @@ assertAlmostEqual(len, ones(n, 1), 1e-12);
 assertAlmostEqual(S, V, 1e-12);
 
 % Check if functions rho are identically one.
-assertAlmostEqual(rho1, ones(n, 1), 1e-12);
-assertAlmostEqual(rho2, ones(n, 1), 1e-12);
+assertAlmostEqual(rho, ones(n, 1), 1e-12);
 
 end

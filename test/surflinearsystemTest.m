@@ -138,3 +138,43 @@ assertAlmostEqual(A, A');
 assertAlmostEqual(D, D');
 
 end
+
+function partiallyNoDataTest
+
+% Create triangulation of unit sphere.
+[F, V] = sphTriang(3);
+m = size(F, 1);
+
+% Set parameters for unit sphere.
+Ns = 0;
+Y = spharm(Ns, [0, 0, 1]);
+c = 1 / Y;
+
+% Create random data on vertices.
+f1 = [randi(255, [m/2, 6]); zeros(m/2, 6)];
+f2 = zeros(m, 6);
+
+% Set parameters.
+h = 1;
+tol = 1e-6;
+
+% Create linear system.
+N = 5;
+deg = 1;
+[dim, A, D, b] = surflinearsystem(F, V, Ns, c, 1:N, f1, f2, h, deg, tol);
+
+% Check results.
+assertEqual(dim, 2*(N^2 + 2*N));
+assertFalse(isempty(A));
+assertEqual(size(A), [2*(N^2 + 2*N), 2*(N^2 + 2*N)]);
+assertFalse(isempty(D));
+assertEqual(size(D), [2*(N^2 + 2*N), 2*(N^2 + 2*N)]);
+assertFalse(isempty(b));
+assertTrue(isvector(b));
+assertEqual(size(b), [2*(N^2 + 2*N), 1]);
+
+% Check if matrices are symmetric.
+assertAlmostEqual(A, A');
+assertAlmostEqual(D, D');
+
+end

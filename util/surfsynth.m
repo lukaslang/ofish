@@ -14,7 +14,7 @@
 %
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
-function [S, rho] = surfsynth(Ns, X, c, Y)
+function [S, rho] = surfsynth(Ns, X, c)
 %SURFSYNTH Computes synthesis of a sphere-like surface for given points on 
 %the unit sphere.
 %
@@ -22,10 +22,6 @@ function [S, rho] = surfsynth(Ns, X, c, Y)
 %   harmonics of degrees Ns and points X on the unit sphere and returns the
 %   projection V of these to the sphere-like surface. rho is the radial
 %   function evaluated at X.
-%
-%   [S, rho] = surfsynth(N, X, c, Y) additionally takes scalar spherical 
-%   harmonics Y which have been evaluated at X. This is useful e.g. after 
-%   calling surffit, which returns Y.
 %
 %   Note that Ns must be a vector of non-negative consecutive integers. 
 %   X is an [n, 3, nq] matrix of points on the unit sphere. c is a vector of 
@@ -48,25 +44,18 @@ dim = Ns(end)^2 + 2*Ns(end) - Ns(1)^2 + 1;
 assert(isvector(c));
 assert(length(c) == dim);
 
-if(nargin == 4)
-    % Check if dimensions comply.
-    assert(size(Y, 1) == n);
-    assert(size(Y, 2) == dim);
-    assert(size(Y, 3) == nq);
-else
-    % Evaluate scalar spherical harmonics at points X.
-    Y = zeros(n, dim, nq);
-    parfor q=1:nq
-        Y(:, :, q) = spharmn(Ns, X(:, :, q));
-    end
-end
-
 rho = zeros(n, nq);
 S = zeros(n, 3, nq);
-parfor q=1:nq
-    % Recover surface function at X.
-    rho(:, q) = Y(:, :, q) * c;
-
+for q=1:nq
+    d = 1;
+    Xq = X(:, :, q);
+    for k=Ns
+        % Evaluate scalar spherical harmonics at points X.
+        Y = spharm(k, Xq);
+        % Recover surface function at X.
+        rho(:, q) = rho(:, q) + Y * c(d:(d+2*k));
+        d = d + 2*k + 1;
+    end
     % Compute coordinates of surface at points X.
     S(:, :, q) = bsxfun(@times, X(:, :, q), rho(:, q));
 end
