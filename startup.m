@@ -30,6 +30,7 @@ ofdPath = 'Z:\git\ofd';
 addpath(ofdPath);
 addpath(genpath(fullfile(ofdPath, 'util\')));
 addpath(genpath(fullfile(ofdPath, 'colourwheel\')));
+addpath(genpath(fullfile(ofdPath, 'visualisation\')));
 
 % Add all subfolders.
 y = dir('.');

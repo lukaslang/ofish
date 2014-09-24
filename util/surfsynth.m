@@ -48,10 +48,9 @@ rho = zeros(n, nq);
 S = zeros(n, 3, nq);
 for q=1:nq
     d = 1;
-    Xq = X(:, :, q);
     for k=Ns
         % Evaluate scalar spherical harmonics at points X.
-        Y = spharm(k, Xq);
+        Y = spharm(k, X(:, :, q));
         % Recover surface function at X.
         rho(:, q) = rho(:, q) + Y * c(d:(d+2*k));
         d = d + 2*k + 1;
