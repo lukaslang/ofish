@@ -39,7 +39,7 @@ assert(N > 0);
 assert(isscalar(N));
 
 % Compute linear system for optical flow.
-[~, A, D, b] = surflinearsystem(F, V, Ns, c, 1:N, f1, f2, h, deg, 1e-6);
+[~, A, D, b] = surflinearsystem(F, V, Ns, c, 1:N, f1, f2, h, deg, 1e-2);
 
 % Solve linear system.
 u = gmres(A + alpha * D, b, [], 1e-6, 30);
@@ -47,21 +47,8 @@ u = gmres(A + alpha * D, b, [], 1e-6, 30);
 % TODO: Allow specification of evaluation points.
 xi = repmat([1/3, 1/3], size(F, 1), 1);
 
-% TODO: Write a clean implementation of the synthesis.
 % Recover vector field on the surface.
-idx = 1;
-for k=1:N
-    [Y1c, Y2c] = trivspharmcoeff(k, F, V, xi);
-    Y1(:, idx:(idx+2*k), :) = Y1c;
-    Y2(:, idx:(idx+2*k), :) = Y2c;
-    idx = idx + 2*k + 1;
-end
-Y = cat(2, Y1, Y2);
-C = zeros(m, 2);
-for k=1:m
-    C(k, 1) = dot(squeeze(Y(k, :, 1)), u);
-    C(k, 2) = dot(squeeze(Y(k, :, 2)), u);
-end
+Y = trivspharmncoeff(1:N, F, V, xi);
 
 % Compute rho at nodal points.
 Vn = normalise(trinodalpts2(F, V));
@@ -70,7 +57,8 @@ Vn = normalise(trinodalpts2(F, V));
 % Compute tangent basis on surface.
 [Dx, Dy] = surftanBasis(F, V, rho, xi);
 
-% Recover vector field.
-U = bsxfun(@times, C(:, 1), Dx) + bsxfun(@times, C(:, 2), Dy);
+u = reshape(u, [1, length(u), 1]);
+S = squeeze(sum(bsxfun(@times, Y, u), 2));
+U = bsxfun(@times, S(:, 1), Dx) + bsxfun(@times, S(:, 2), Dy);
 
 end

@@ -78,7 +78,7 @@ c = 1 / Y;
 N = 5;
 h = 1;
 alpha = 1;
-deg = 1;
+deg = 7;
 
 u = ofish(N, Ns, c, F, V, f1, f2, h, deg, alpha);
 assertFalse(isempty(u));

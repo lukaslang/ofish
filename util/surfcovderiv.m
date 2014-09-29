@@ -115,79 +115,61 @@ for k=1:2
     DAinv(:, k, 2, 2, :) = -(squeeze(DA(:, k, 2, 2, :)) .* detA - squeeze(Ai(:, 2, 2, :)) .* squeeze(DdetA(:, k, :))) ./ (detA .^2);
 end
 
+% Compute vspharm independent stuff.
+T11 = zeros(2, 2, m, nq);
+T12 = zeros(2, 2, m, nq);
+T21 = zeros(2, 2, m, nq);
+T22 = zeros(2, 2, m, nq);
+for k=1:2
+    for l=1:2
+        T11(k, l, :, :) = squeeze(Ai(:, 1, k, :) .* Ai(:, 1, l, :));
+        T21(k, l, :, :) = squeeze(Ai(:, 2, k, :) .* Ai(:, 1, l, :));
+        T12(k, l, :, :) = squeeze(Ai(:, 1, k, :) .* Ai(:, 2, l, :));
+        T22(k, l, :, :) = squeeze(Ai(:, 2, k, :) .* Ai(:, 2, l, :));
+    end
+end
+
 Z11 = zeros(m, dim, nq);
 Z12 = zeros(m, dim, nq);
 Z21 = zeros(m, dim, nq);
 Z22 = zeros(m, dim, nq);
-for d=1:dim
-    % Assemble first term.
-    for k=1:2
-        for l=1:2
-            %Z(:, d, i, j, :) = squeeze(Z(:, d, i, j, :)) + squeeze(Ai(:, i, k, :)) .* squeeze(Y(:, d, l, :)) .* squeeze(DAinv(:, k, l, j, :));
-            T1 = squeeze(Y(:, d, l, :)) .* squeeze(DAinv(:, k, l, 1, :));
-            T2 = squeeze(Y(:, d, l, :)) .* squeeze(DAinv(:, k, l, 2, :));
-            Z11(:, d, :) = squeeze(Z11(:, d, :)) + squeeze(Ai(:, 1, k, :)) .* T1;
-            Z12(:, d, :) = squeeze(Z12(:, d, :)) + squeeze(Ai(:, 1, k, :)) .* T2;
-            Z21(:, d, :) = squeeze(Z21(:, d, :)) + squeeze(Ai(:, 2, k, :)) .* T1;
-            Z22(:, d, :) = squeeze(Z22(:, d, :)) + squeeze(Ai(:, 2, k, :)) .* T2;
-        end
-    end
-        
-    % Assemble second term.
-    for k=1:2
-        for l=1:2
-            %Z(:, d, i, j, :) = squeeze(Z(:, d, i, j, :)) + squeeze(Ai(:, i, k, :)) .* squeeze(Ainv(:, l, j, :)) .* squeeze(DY(:, k, d, l, :));
-            T1 = squeeze(Ainv(:, l, 1, :)) .* squeeze(DY(:, k, d, l, :));
-            T2 = squeeze(Ainv(:, l, 2, :)) .* squeeze(DY(:, k, d, l, :));
-            Z11(:, d, :) = squeeze(Z11(:, d, :)) + squeeze(Ai(:, 1, k, :)) .* T1;
-            Z12(:, d, :) = squeeze(Z12(:, d, :)) + squeeze(Ai(:, 1, k, :)) .* T2;
-            Z21(:, d, :) = squeeze(Z21(:, d, :)) + squeeze(Ai(:, 2, k, :)) .* T1;
-            Z22(:, d, :) = squeeze(Z22(:, d, :)) + squeeze(Ai(:, 2, k, :)) .* T2;
-        end
-    end
-
-    % Assemble first part of third term.
-    for k=1:2
-        for l=1:2
-            T = squeeze(Ainv(:, l, k, :) .* Y(:, d, l, :));
-            for m=1:2
-                for p=1:2
-                    for q=1:2
-                        %Z(:, d, i, j, :) = squeeze(Z(:, d, i, j, :)) + squeeze(Ainv(:, l, k, :)) .* squeeze(Y(:, d, l, :)) .* squeeze(Ai(:, j, q, :)) .* squeeze(g(:, q, p, :)) .* squeeze(Ai(:, i, m, :)) .* squeeze(DA(:, m, k, p, :));
-                        Tmqp = squeeze(g(:, q, p, :)) .* squeeze(DA(:, m, k, p, :)) .* T;
-                        T11 = squeeze(Ai(:, 1, q, :) .* Ai(:, 1, m, :)) .* Tmqp;
-                        T21 = squeeze(Ai(:, 2, q, :) .* Ai(:, 1, m, :)) .* Tmqp;
-                        T12 = squeeze(Ai(:, 1, q, :) .* Ai(:, 2, m, :)) .* Tmqp;
-                        T22 = squeeze(Ai(:, 2, q, :) .* Ai(:, 2, m, :)) .* Tmqp;
-                        Z11(:, d, :) = squeeze(Z11(:, d, :)) + T11;
-                        Z12(:, d, :) = squeeze(Z12(:, d, :)) + T21;
-                        Z21(:, d, :) = squeeze(Z21(:, d, :)) + T12;
-                        Z22(:, d, :) = squeeze(Z22(:, d, :)) + T22;
-                    end
-                end
-            end
-        end
-    end
-        
-    % Assemble second part of third term.
+for k=1:2
     for l=1:2
-        for m=1:2
+        %Z(:, d, i, j, :) = squeeze(Z(:, d, i, j, :)) + squeeze(Ai(:, i, k, :)) .* squeeze(Y(:, d, l, :)) .* squeeze(DAinv(:, k, l, j, :));
+        T1 = bsxfun(@times, reshape(Y(:, :, l, :), [m, dim, nq]), reshape(DAinv(:, k, l, 1, :), [m, 1, nq])) + bsxfun(@times, reshape(Ainv(:, l, 1, :), [m, 1, nq]), reshape(DY(:, k, :, l, :), [m, dim, nq]));
+        T2 = bsxfun(@times, reshape(Y(:, :, l, :), [m, dim, nq]), reshape(DAinv(:, k, l, 2, :), [m, 1, nq])) + bsxfun(@times, reshape(Ainv(:, l, 2, :), [m, 1, nq]), reshape(DY(:, k, :, l, :), [m, dim, nq]));
+        Z11 = Z11 + bsxfun(@times, reshape(Ai(:, 1, k, :), [m, 1, nq]), T1);
+        Z12 = Z12 + bsxfun(@times, reshape(Ai(:, 1, k, :), [m, 1, nq]), T2);
+        Z21 = Z21 + bsxfun(@times, reshape(Ai(:, 2, k, :), [m, 1, nq]), T1);
+        Z22 = Z22 + bsxfun(@times, reshape(Ai(:, 2, k, :), [m, 1, nq]), T2);
+
+        % Assemble first part of third term.
+        T = bsxfun(@times, reshape(Ainv(:, l, k, :), [m, 1, nq]), reshape(Y(:, :, l, :), [m, dim, nq]));
+        for r=1:2
             for p=1:2
                 for q=1:2
-                    %Z(:, d, i, j, :) = squeeze(Z(:, d, i, j, :)) + squeeze(Ai(:, j, q, :)) .* squeeze(Ai(:, i, m, :)) .* squeeze(Y(:, d, l, :)) .* squeeze(G(:, p, m, l, :)) .* squeeze(g(:, q, p, :));
-                    T = squeeze(Y(:, d, l, :) .* g(:, q, p, :)) .* squeeze(G(:, p, m, l, :));
-                    T11 = squeeze(Ai(:, 1, q, :) .* Ai(:, 1, m, :));
-                    T21 = squeeze(Ai(:, 2, q, :) .* Ai(:, 1, m, :));
-                    T12 = squeeze(Ai(:, 1, q, :) .* Ai(:, 2, m, :));
-                    T22 = squeeze(Ai(:, 2, q, :) .* Ai(:, 2, m, :));
-                    Z11(:, d, :) = squeeze(Z11(:, d, :)) + T11 .* T;
-                    Z12(:, d, :) = squeeze(Z12(:, d, :)) + T21 .* T;
-                    Z21(:, d, :) = squeeze(Z21(:, d, :)) + T12 .* T;
-                    Z22(:, d, :) = squeeze(Z22(:, d, :)) + T22 .* T;
+                    %Z(:, d, i, j, :) = squeeze(Z(:, d, i, j, :)) + squeeze(Ainv(:, l, k, :)) .* squeeze(Y(:, d, l, :)) .* squeeze(Ai(:, j, q, :)) .* squeeze(g(:, q, p, :)) .* squeeze(Ai(:, i, m, :)) .* squeeze(DA(:, m, k, p, :));
+                    Tmqp = bsxfun(@times, reshape(DA(:, r, k, p, :), [m, 1, nq]) .* reshape(g(:, q, p, :), [m, 1, nq]), T);
+                    % TODO: Check sizes!
+                    Z11 = Z11 + bsxfun(@times, reshape(T11(q, r, :, :), [m, 1, nq]), Tmqp);
+                    Z12 = Z12 + bsxfun(@times, reshape(T21(q, r, :, :), [m, 1, nq]), Tmqp);
+                    Z21 = Z21 + bsxfun(@times, reshape(T12(q, r, :, :), [m, 1, nq]), Tmqp);
+                    Z22 = Z22 + bsxfun(@times, reshape(T22(q, r, :, :), [m, 1, nq]), Tmqp);
                 end
             end
         end
-    end
+        % Assemble second part of third term.
+        for p=1:2
+            for q=1:2
+                %Z(:, d, i, j, :) = squeeze(Z(:, d, i, j, :)) + squeeze(Ai(:, j, q, :)) .* squeeze(Ai(:, i, m, :)) .* squeeze(Y(:, d, l, :)) .* squeeze(G(:, p, m, l, :)) .* squeeze(g(:, q, p, :));
+                T = bsxfun(@times, reshape(Y(:, :, k, :), [m, dim, nq]), reshape(g(:, q, p, :), [m, 1, nq]) .* reshape(G(:, p, l, k, :), [m, 1, nq]));
+                Z11 = Z11 + bsxfun(@times, reshape(T11(q, l, :, :), [m, 1, nq]), T);
+                Z12 = Z12 + bsxfun(@times, reshape(T21(q, l, :, :), [m, 1, nq]), T);
+                Z21 = Z21 + bsxfun(@times, reshape(T12(q, l, :, :), [m, 1, nq]), T);
+                Z22 = Z22 + bsxfun(@times, reshape(T22(q, l, :, :), [m, 1, nq]), T);
+            end
+        end
 
+    end
 end
 end

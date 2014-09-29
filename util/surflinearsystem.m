@@ -51,8 +51,6 @@ assert(size(f2, 2) == 6);
 assert(size(f1, 1) == m);
 assert(size(f2, 1) == m);
 
-% TODO: Implement tol restriction for integration.
-
 % Get quadrature rule.
 [xiq, w] = triquadrature(deg);
 xi = repmat(permute(xiq, [3, 2, 1]), [m, 1, 1]);
@@ -143,33 +141,4 @@ parfor k=1:dim
     b(k) = - surfintegral(dfdtc .* squeeze(Z(:, k, :)) .* sqrt(abs(detphic)), w, ac);
 end
 
-end
-
-function A = matrixA(dim, Z, detphi, w, a)
-    A = zeros(dim, dim);
-    for p=1:dim
-        for q=1:p
-            A(p, q) = surfintegral(squeeze(Z(:, p, :) .* Z(:, q, :)) .* sqrt(abs(detphi)), w, a);
-            A(q, p) = A(p, q);
-        end
-    end
-end
-
-function D = matrixD(dim, Z11, Z12, Z21, Z22, detphi, w, a)
-    D = zeros(dim, dim);
-    for p=1:dim
-        for q=1:p
-            f = Z11(:, p, :) .* Z11(:, q, :) + Z12(:, p, :) .* Z12(:, q, :) + Z21(:, p, :) .* Z21(:, q, :) + Z22(:, p, :) .* Z22(:, q, :);
-            D(p, q) = surfintegral(squeeze(f) .* sqrt(abs(detphi)), w, a);
-            D(q, p) = D(p, q);
-        end
-    end
-
-    % Add diagonal.
-    d = zeros(dim, 1);
-    for p=1:dim
-        f = Z11(:, p, :) .^2 + Z12(:, p, :) .^2 + Z21(:, p, :) .^2 + Z22(:, p, :) .^2;
-        d(p) = surfintegral(squeeze(f) .* sqrt(abs(detphi)), w, a);
-    end
-    D = diag(d) + D / 2;
 end

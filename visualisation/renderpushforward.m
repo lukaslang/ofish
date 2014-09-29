@@ -119,7 +119,7 @@ for k=N
         %set(gca, 'ZTick', -1:0.5:1);
         %set(gca, 'CLim', [-1, 1]);
         % Save image.
-        savefigure(fh, fullfile('./', 'renderings', 'vspharm', sprintf('vspharm-deg-%i-ord-%i-600dpi.png', k, l)), '-png', '-r600');
+        %savefigure(fh, fullfile('./', 'renderings', 'vspharm', sprintf('vspharm-deg-%i-ord-%i-600dpi.png', k, l)), '-png', '-r600');
         %savefigure(fh, fullfile('./', 'renderings', 'vspharm', sprintf('vspharm-deg-%i-ord-%i-1200dpi.png', k, l)), '-png', '-r1200');
         %savefigure(fh, fullfile('./', 'renderings', 'vspharm', sprintf('vspharm-deg-%i-ord-%i-600dpi.jpg', k, l)), '-jpg', '-r600', '-q100');
         %savefigure(fh, fullfile('./', 'renderings', 'vspharm', sprintf('vspharm-deg-%i-ord-%i-1200dpi.jpg', k, l)), '-jpg', '-r1200', '-q100');
@@ -132,7 +132,7 @@ adjustFigure3;
 cbar = findobj(fh, 'tag', 'Colorbar');
 set(cbar, 'YTick', -1:0.25:1);
 set(cbar, 'TickLength', [.02 .02], 'YColor', [0 0 0]);
-savefigure(fh, fullfile('./', 'renderings', 'vspharm', sprintf('vspharm-deg-%i-ord-%i-colourbar-600dpi.png', k, l)), '-png', '-r600');
+%savefigure(fh, fullfile('./', 'renderings', 'vspharm', sprintf('vspharm-deg-%i-ord-%i-colourbar-600dpi.png', k, l)), '-png', '-r600');
 %savefigure(fh, fullfile('./', 'renderings', 'vspharm', sprintf('vspharm-deg-%i-ord-%i-colourbar-1200dpi.png', k, l)), '-png', '-r1200');
 %savefigure(fh, fullfile('./', 'renderings', 'vspharm', sprintf('vspharm-deg-%i-ord-%i-colourbar-600dpi.jpg', k, l)), '-jpg', '-r600', '-q100');
 %savefigure(fh, fullfile('./', 'renderings', 'vspharm', sprintf('vspharm-deg-%i-ord-%i-colourbar-1200dpi.jpg', k, l)), '-jpg', '-r1200', '-q100');
