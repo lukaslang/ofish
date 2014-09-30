@@ -100,7 +100,7 @@ assertEqual(size(v), [m, 3]);
 fprintf('Residual: %f.\n', res);
 
 % Check if flow is almost equal.
-assertAlmostEqual(u, v, 0.05);
+assertAlmostEqual(u, v, 0.1);
 
 TR = TriRep(F, V);
 P = TR.incenters;

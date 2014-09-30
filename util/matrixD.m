@@ -18,7 +18,6 @@ function D = matrixD(dim, Z11, Z12, Z21, Z22, detphi, w, a)
 %MATRIXD Computes the regularisation matrix.
 
 nq = length(w);
-m = length(a);
 D = zeros(dim, dim);
 for p=1:dim
     Z11pq = bsxfun(@times, Z11(:, p, :), Z11(:, 1:p, :));
@@ -26,11 +25,12 @@ for p=1:dim
     Z21pq = bsxfun(@times, Z21(:, p, :), Z21(:, 1:p, :));
     Z22pq = bsxfun(@times, Z22(:, p, :), Z22(:, 1:p, :));
     f = bsxfun(@times, Z11pq + Z12pq + Z21pq + Z22pq, permute(sqrt(abs(detphi)), [1, 3, 2]));
-    f = sum(bsxfun(@times, sum(bsxfun(@times, f, repmat(reshape(w, [1, 1, nq]), [m, p, 1])), 3), a), 1);
+    f = 0.5 * sum(bsxfun(@times, sum(bsxfun(@times, f, reshape(w, [1, 1, nq])), 3), a), 1);
     D(p, 1:p) = f;
     D(1:p, p) = f;
 end
 
 % Add diagonal.
-D = diag(diag(D)) + D / 2;
+D(1:(dim+1):end) = 2 * diag(D);
+
 end
