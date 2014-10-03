@@ -25,8 +25,8 @@ path = fullfile('./', 'data', name);
 
 % Import data.
 disp('Loading image data.');
-%load(fullfile(path, 'frames-114-116-filtered.mat'));
 %load(fullfile(path, 'frames-114-116-unfiltered.mat'));
+%load(fullfile(path, 'frames-120-122-unfiltered.mat'));
 load(fullfile(path, 'frames-140-142-unfiltered.mat'));
 
 % Import cell centres.
@@ -37,6 +37,7 @@ load(fullfile(path, 'thresholdedcenters.mat'));
 load(fullfile(path, 'cmapblue.mat'));
 
 %frame = 114;
+%frame = 120;
 frame = 140;
 
 % Set parameters.
@@ -168,10 +169,10 @@ up = projecttoplane(u);
 nmax = max(sqrt(sum(up.^2, 2)));
 
 % Compute colour of projection.
-c = double(squeeze(computeColour(up(:, 1)/nmax, up(:, 2)/nmax))) ./ 255;
+col = double(squeeze(computeColour(up(:, 1)/nmax, up(:, 2)/nmax))) ./ 255;
 
 figure;
-trisurf(F, Vs(:, 1), Vs(:, 2), Vs(:, 3), 'FaceColor', 'flat', 'FaceVertexCData', c, 'EdgeColor', 'none');
+trisurf(F, Vs(:, 1), Vs(:, 2), Vs(:, 3), 'FaceColor', 'flat', 'FaceVertexCData', col, 'EdgeColor', 'none');
 daspect([1, 1, 1]);
 view(3);
 

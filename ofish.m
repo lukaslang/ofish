@@ -47,9 +47,6 @@ u = gmres(A + alpha * D, b, [], 1e-6, 30);
 % TODO: Allow specification of evaluation points.
 xi = repmat([1/3, 1/3], size(F, 1), 1);
 
-% Recover vector field on the surface.
-Y = trivspharmncoeff(1:N, F, V, xi);
-
 % Compute rho at nodal points.
 Vn = normalise(trinodalpts2(F, V));
 [~, rho] = surfsynth(Ns, Vn, c);
@@ -57,8 +54,10 @@ Vn = normalise(trinodalpts2(F, V));
 % Compute tangent basis on surface.
 [Dx, Dy] = surftanBasis(F, V, rho, xi);
 
-u = reshape(u, [1, length(u), 1]);
-S = squeeze(sum(bsxfun(@times, Y, u), 2));
-U = bsxfun(@times, S(:, 1), Dx) + bsxfun(@times, S(:, 2), Dy);
+% Compute synthesis.
+[Yx, Yy] = trivspharmcoeffsynth(1:N, F, V, u, xi);
+
+% Recover vector field on the surface.
+U = bsxfun(@times, Yx, Dx) + bsxfun(@times, Yy, Dy);
 
 end
