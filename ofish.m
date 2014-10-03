@@ -55,7 +55,7 @@ Vn = normalise(trinodalpts2(F, V));
 [Dx, Dy] = surftanBasis(F, V, rho, xi);
 
 % Compute synthesis.
-[Yx, Yy] = trivspharmcoeffsynth(1:N, F, V, u, xi);
+[Yx, Yy] = trivspharmsynth(1:N, F, V, u, xi);
 
 % Recover vector field on the surface.
 U = bsxfun(@times, Yx, Dx) + bsxfun(@times, Yy, Dy);

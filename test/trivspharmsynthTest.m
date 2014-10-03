@@ -14,7 +14,7 @@
 %
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
-function test_suite = trivspharmcoeffsynthTest
+function test_suite = trivspharmsynthTest
     initTestSuite;
 end
 
@@ -31,7 +31,7 @@ N = 10;
 % Create coefficients.
 u = zeros(2*(N^2 + 2*N), 1);
 % Compute vector spherical harmonics synthesis.
-[Yx, Yy] = trivspharmcoeffsynth(1:N, F, V, u, xi);
+[Yx, Yy] = trivspharmsynth(1:N, F, V, u, xi);
 
 % Check results.
 assertFalse(isempty(Yx));
@@ -56,7 +56,7 @@ N = 3:10;
 % Create coefficients.
 u = zeros(2*(N(end)^2 + 2*N(end) - N(1)^2 + 1), 1);
 % Compute vector spherical harmonics synthesis.
-[Yx, Yy] = trivspharmcoeffsynth(N, F, V, u, xi);
+[Yx, Yy] = trivspharmsynth(N, F, V, u, xi);
 
 % Check results.
 assertFalse(isempty(Yx));
@@ -70,7 +70,7 @@ N = 1:10;
 % Create coefficients.
 u = zeros(2*(N(end)^2 + 2*N(end) - N(1)^2 + 1), 1);
 % Compute vector spherical harmonics synthesis.
-[Yx, Yy] = trivspharmcoeffsynth(N, F, V, u, xi);
+[Yx, Yy] = trivspharmsynth(N, F, V, u, xi);
 
 % Check results.
 assertFalse(isempty(Yx));
@@ -96,7 +96,7 @@ N = 30;
 u = zeros(2*(N^2 + 2*N), 1);
 % Compute vector spherical harmonics synthesis.
 mem = 2e6;
-[Yx, Yy] = trivspharmcoeffsynth(1:N, F, V, u, xi, mem);
+[Yx, Yy] = trivspharmsynth(1:N, F, V, u, xi, mem);
 
 % Check results.
 assertFalse(isempty(Yx));
@@ -123,7 +123,7 @@ dim = 2*(N^2 + 2*N);
 u = ones(dim, 1);
 
 % Compute vector spherical harmonics synthesis.
-[Yx, Yy] = trivspharmcoeffsynth(1:N, F, V, u, xi);
+[Yx, Yy] = trivspharmsynth(1:N, F, V, u, xi);
 
 % Compute coefficients.
 Y = trivspharmncoeff(1:N, F, V, xi);

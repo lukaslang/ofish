@@ -14,11 +14,11 @@
 %
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
-function [Yx, Yy] = trivspharmcoeffsynth(N, F, V, u, xi, mem)
-%TRIVSPHARMCOEFFSYNTH Computes vector spherical harmonics synthesis on a
+function [Yx, Yy] = trivspharmsynth(N, F, V, u, xi, mem)
+%TRIVSPHARMSYNTH Computes vector spherical harmonics synthesis on a
 %triangulated sphere.
 %
-%   [Yx, Yy] = TRIVSPHARMCOEFFSYNTH(N, F, V, u, xi) takes coefficients u 
+%   [Yx, Yy] = TRIVSPHARMSYNTH(N, F, V, u, xi) takes coefficients u 
 %   for vector sphercial harmonics of degrees N and a triangulation F, V of
 %   the unit sphere and returns the coefficients of a field Yi*Di at
 %   barycentric coordinates xi. The coefficients are with respect to the
@@ -29,12 +29,12 @@ function [Yx, Yy] = trivspharmcoeffsynth(N, F, V, u, xi, mem)
 %   Note that u must be a vector of length dim, where dim is the dimension
 %   of vector spherical harmonics specified by the degrees N.
 %
-%   [Yx, Yy] = TRIVSPHARMCOEFFSYNTH(N, F, V, u, xi, mem) additionally takes
+%   [Yx, Yy] = TRIVSPHARMSYNTH(N, F, V, u, xi, mem) additionally takes
 %   a memory constraint in bytes and allows TRIVSPHARMSYNTH to use up to
 %   mem bytes.
 %
-%   Note that if mem is specified, TRIVSPHARMCOEFFSYNTH then creates 
-%   several degrees of vector spherical harmonics at once using mem bytes.
+%   Note that if mem is specified, TRIVSPHARMSYNTH then creates several 
+%   degrees of vector spherical harmonics at once using mem bytes.
 %   However, at least one degree is generated in each iteration, possibly 
 %   exceeding the specified memory! However, even if mem is specified, some
 %   extra memory is consumed by Matlab for multiplication and addition.
