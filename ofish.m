@@ -39,10 +39,10 @@ assert(N > 0);
 assert(isscalar(N));
 
 % Compute linear system for optical flow.
-[~, A, D, b] = surflinearsystem(F, V, Ns, c, 1:N, f1, f2, h, deg, 1e-2);
+[dim, A, D, b] = surflinearsystem(F, V, Ns, c, 1:N, f1, f2, h, deg, 1e-2);
 
 % Solve linear system.
-u = gmres(A + alpha * D, b, [], 1e-6, 30);
+u = ofishsolve(dim, A, D, b, alpha, 1e-6, 30);
 
 % TODO: Allow specification of evaluation points.
 xi = repmat([1/3, 1/3], size(F, 1), 1);
