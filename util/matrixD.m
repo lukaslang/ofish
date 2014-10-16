@@ -25,12 +25,8 @@ for p=1:dim
     Z21pq = bsxfun(@times, Z21(:, p, :), Z21(:, 1:p, :));
     Z22pq = bsxfun(@times, Z22(:, p, :), Z22(:, 1:p, :));
     f = bsxfun(@times, Z11pq + Z12pq + Z21pq + Z22pq, permute(sqrt(abs(detphi)), [1, 3, 2]));
-    f = 0.5 * sum(bsxfun(@times, sum(bsxfun(@times, f, reshape(w, [1, 1, nq])), 3), a), 1);
+    f = sum(bsxfun(@times, sum(bsxfun(@times, f, reshape(w, [1, 1, nq])), 3), a), 1);
     D(p, 1:p) = f;
     D(1:p, p) = f;
 end
-
-% Add diagonal.
-D(1:(dim+1):end) = 2 * diag(D);
-
 end

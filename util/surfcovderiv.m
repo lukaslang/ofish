@@ -150,7 +150,6 @@ for k=1:2
                 for q=1:2
                     %Z(:, d, i, j, :) = squeeze(Z(:, d, i, j, :)) + squeeze(Ainv(:, l, k, :)) .* squeeze(Y(:, d, l, :)) .* squeeze(Ai(:, j, q, :)) .* squeeze(g(:, q, p, :)) .* squeeze(Ai(:, i, m, :)) .* squeeze(DA(:, m, k, p, :));
                     Tmqp = bsxfun(@times, reshape(DA(:, r, k, p, :), [m, 1, nq]) .* reshape(g(:, q, p, :), [m, 1, nq]), T);
-                    % TODO: Check sizes!
                     Z11 = Z11 + bsxfun(@times, reshape(T11(q, r, :, :), [m, 1, nq]), Tmqp);
                     Z12 = Z12 + bsxfun(@times, reshape(T21(q, r, :, :), [m, 1, nq]), Tmqp);
                     Z21 = Z21 + bsxfun(@times, reshape(T12(q, r, :, :), [m, 1, nq]), Tmqp);
