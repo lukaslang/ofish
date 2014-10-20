@@ -44,7 +44,7 @@ frame = 140;
 zscale = 4.2832;
 
 % Set degrees of vector spherical harmonics basis.
-N = 1:20;
+N = 1:50;
 
 % Finite difference time parameter.
 h = 1;
@@ -57,10 +57,10 @@ deg = 1;
 
 % Parameters for radial projection of the data.
 bandwidth = [0.8, 1.2];
-layers = 40;
+layers = 80;
 
 % Set surface fitting parameters.
-Ns = 0:10;
+Ns = 0:50;
 beta = 0.25;
 s = 1;
 

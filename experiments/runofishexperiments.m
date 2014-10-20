@@ -24,7 +24,7 @@ name = 'cxcr4aMO2_290112';
 path = fullfile('./', 'data', name, 'generated');
 
 % Load file.
-filename = 'frames-140-142-unfiltered-1-20-7';
+filename = 'frames-140-142-unfiltered-1-50-7';
 D = load(fullfile(path, sprintf('dat-%s.mat', filename)));
 G = load(fullfile(path, sprintf('gen-%s.mat', filename)));
 
