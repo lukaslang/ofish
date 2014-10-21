@@ -41,7 +41,9 @@ load(fullfile(path, 'thresholdedcenters.mat'));
 frame = 140;
 
 % Scaling in z-direction.
-zscale = 4.2832;
+xscale = 1.6774;
+yscale = 1.6774;
+zscale = 7.1847;
 
 % Set degrees of vector spherical harmonics basis.
 N = 1:50;
@@ -68,8 +70,8 @@ s = 1;
 ref = 7;
 
 % Prepare cell centres.
-X = F{frame}.X;
-Y = F{frame}.Y;
+X = xscale * F{frame}.X;
+Y = yscale * F{frame}.Y;
 Z = -zscale * F{frame}.Z;
 shift = -min(Z);
 
@@ -112,7 +114,7 @@ for k=1:2
     fq = zeros(size(F, 1), 6);
     for q=1:6
         VB = kron(rs', Vn(:, :, q));
-        fb = dataFromCube(sc(1) + VB(:, 1), sc(2) + VB(:, 2), sc(3) + VB(:, 3), X, Y, zscale * Z, u);
+        fb = dataFromCube(sc(1) + VB(:, 1), sc(2) + VB(:, 2), sc(3) + VB(:, 3), xscale * X, yscale * Y, zscale * Z, u);
         fq(:, q) = max(reshape(fb, size(Vn, 1), length(rs)), [], 2);
     end
     f{k} = fq;

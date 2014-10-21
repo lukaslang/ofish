@@ -18,8 +18,5 @@ function adjustFigure3
 %ADJUSTFIGURE3 Adjusts 3D figure for print.
     set(gca, 'FontName', 'Helvetica' );
     set(gca, 'FontSize', 14);
-    set(gca, 'XTick', -200:100:200);
-    set(gca, 'YTick', -200:100:200);
-    set(gca, 'ZTick', -200:100:200);
     set(gca, 'Box', 'off', 'TickDir', 'out', 'TickLength', [.02 .02], 'XMinorTick', 'on', 'YMinorTick', 'on', 'ZMinorTick', 'on', 'YGrid', 'off');
 end
