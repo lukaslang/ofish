@@ -99,6 +99,48 @@ assertAlmostEqual(D, D');
 
 end
 
+function memTest
+
+% Create triangulation of unit sphere.
+[F, V] = sphTriang(3);
+m = size(F, 1);
+
+% Set parameters for unit sphere.
+Ns = 0;
+Y = spharm(Ns, [0, 0, 1]);
+c = 1 / Y;
+
+% Create random data on nodal points.
+f1 = randi(255, [m, 6]);
+f2 = randi(255, [m, 6]);
+
+% Set parameters.
+h = 1;
+tol = 1e-6;
+
+% Create linear system.
+N = 3:7;
+mem = 1e9;
+deg = 1;
+[dim, A, D, b] = surflinearsystem(F, V, Ns, c, N, f1, f2, h, deg, tol, mem);
+
+% Check results.
+expDim = 2*(N(end)^2 + 2*N(end) - N(1)^2 + 1);
+assertEqual(dim, expDim);
+assertFalse(isempty(A));
+assertEqual(size(A), [expDim, expDim]);
+assertFalse(isempty(D));
+assertEqual(size(D), [expDim, expDim]);
+assertFalse(isempty(b));
+assertTrue(isvector(b));
+assertEqual(size(b), [expDim, 1]);
+
+% Check if matrices are symmetric.
+assertAlmostEqual(A, A');
+assertAlmostEqual(D, D');
+
+end
+
 function noDataTest
 
 % Create triangulation of unit sphere.

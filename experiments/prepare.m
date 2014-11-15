@@ -137,7 +137,7 @@ mkdir(path);
 [~, file, ~] = fileparts(filename);
 disp('Computing linear system.');
 tic;
-[dim, A, D, b] = surflinearsystem(F, V, Ns, c, N, f{1}, f{2}, h, deg, tol);
+[dim, A, D, b] = surflinearsystem(F, V, Ns, c, N, f{1}, f{2}, h, deg, tol, mem);
 elapsed = toc;
 fprintf('Elapsed time is %.6f seconds.\n', elapsed);
 

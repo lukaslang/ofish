@@ -14,7 +14,7 @@
 %
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
-function [dim, A, D, b] = surflinearsystem(F, V, Ns, c, N, f1, f2, h, deg, tol)
+function [dim, A, D, b] = surflinearsystem(F, V, Ns, c, N, f1, f2, h, deg, tol, mem)
 %SURFLINEARSYSTEM Computes the linear system used in optical flow on a
 %sphere-like surface.
 %
@@ -25,6 +25,10 @@ function [dim, A, D, b] = surflinearsystem(F, V, Ns, c, N, f1, f2, h, deg, tol)
 %   derivative of f1, f2, a degree deg of quadrature, a scalar tol which is
 %   is a tolerance parameter for numerical integration, and returns the 
 %   linear system needed for optical flow computation.
+%
+%   [dim, A, D, b] = SURFLINEARSYSTEM(F, V, Ns, c, N, f1, f2, h, deg, tol, mem)
+%   the parameter mem additionally allows allows to specify the available 
+%   memory in bytes.
 %
 %   Note that degrees N must be a vector of consecutive positive integers!
 %   
@@ -126,11 +130,14 @@ for k=1:6
     ONB(:, :, :, k) = orthonormalise(Dx, Dy);
 end
 
-% Compute coefficients and derivatives of spherical harmonics.
-[Y, DY] = trivspharmncoeff(N, F, V, xi);
-
 % Compute covariant derivatives.
-[Z11, Z12, Z21, Z22] = surfcovderiv(G, g, ONB, Y, DY, xi);
+if(nargin == 10)
+    % Compute coefficients and derivatives of spherical harmonics.
+    [Y, DY] = trivspharmncoeff(N, F, V, xi);
+    [Z11, Z12, Z21, Z22] = surfcovderiv(G, g, ONB, Y, DY, xi);
+else
+    [Z11, Z12, Z21, Z22] = surfcovderivn(N, G, g, ONB, F, V, xi, mem);
+end
 
 % Compute regulariser.
 D = matrixD(dim, Z11, Z12, Z21, Z22, detphi, w, a);
