@@ -195,8 +195,6 @@ for k=1:6
     [Dx, Dy] = surftanBasis(F, V, rho, xin(:, :, k));
     [a, e, f] = orthonormalise(Dx, Dy);
     A(:, :, :, k) = a;
-    B1(:, :, k) = e;
-    B2(:, :, k) = f;
 end
 
 % Pick coordinates.

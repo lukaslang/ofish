@@ -92,8 +92,6 @@ ginv22 = ginv(:, 2, 2);
 
 % Compute partial derivatives of polynomials at xi.
 [DxA, DyA, Q] = tripoly2deriv(xi);
-%DxA = permute(DxA * Q, [2, 3, 1]);
-%DyA = permute(DyA * Q, [2, 3, 1]);
 DxA = (DxA * Q)';
 DyA = (DyA * Q)';
 
