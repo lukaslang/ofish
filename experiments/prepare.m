@@ -46,10 +46,13 @@ yscale = 1.6774;
 zscale = 7.1847;
 
 % Set degrees of vector spherical harmonics basis.
-N = 1:50;
+N = 1:100;
 
 % Finite difference time parameter.
 h = 1;
+
+% Specify memory to use.
+mem = 80e9;
 
 % Numerical integration tolerance.
 tol = 1e-6;
@@ -62,7 +65,7 @@ bandwidth = [0.8, 1.2];
 layers = 80;
 
 % Set surface fitting parameters.
-Ns = 0:50;
+Ns = 0:100;
 beta = 0.25;
 s = 1;
 
