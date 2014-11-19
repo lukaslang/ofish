@@ -89,3 +89,29 @@ assertAlmostEqual(g(:, 2), ones(20, 1));
 assertAlmostEqual(g(:, 3), ones(20, 1));
 
 end
+
+function singleFaceTest
+
+% Create sample function.
+f = ones(1, 6);
+
+% Define centroids in barycentric coordinates.
+xi = repmat([1/3, 1/3], [1, 1, 6]);
+
+% Compute interpolation at xi.
+g = triinterp2(f, xi);
+assertFalse(isempty(g));
+assertEqual(size(g), [1, 6]);
+assertAlmostEqual(g, ones(1, 6));
+
+xi(:, :, 1) = repmat([0, 0], 1, 1);
+xi(:, :, 2) = repmat([1, 0], 1, 1);
+xi(:, :, 3) = repmat([0, 1], 1, 1);
+
+% Compute interpolation at xi.
+g = triinterp2(f, xi);
+assertAlmostEqual(g(:, 1), ones(1, 1));
+assertAlmostEqual(g(:, 2), ones(1, 1));
+assertAlmostEqual(g(:, 3), ones(1, 1));
+
+end
