@@ -31,97 +31,127 @@ load(fullfile(path, 'frames-140-142-unfiltered.mat'));
 
 % Import cell centres.
 disp('Loading cell centres.');
-load(fullfile(path, 'thresholdedcenters.mat'));
+C = load(fullfile(path, 'thresholdedcenters.mat'));
 
 % Load colormap for proper visualisation.
 load(fullfile(path, 'cmapblue.mat'));
 
-%frame = 114;
-%frame = 120;
-frame = 140;
+% Define cell centres.
+frames = [140, 142];
 
-% Set parameters.
+% Scaling in z-direction.
+xscale = 1.6774;
+yscale = 1.6774;
+zscale = 7.1847;
+
+% Set maximum degree of vector spherical harmonics basis.
+N = 5;
+
+% Set regularisation parameter for optical flow.
+alpha = 1;
+
+% Finite difference time parameter.
+h = 1;
+
+% Degree of numerical quadrature.
+deg = 1;
+
+% Parameters for radial projection of the data.
+bandwidth = [0.8, 1.2];
+layers = 80;
+
+% Set surface fitting parameters.
 Ns = 0:10;
-alpha = 0.25;
+beta = 0.25;
 s = 1;
 
-% Prepare cell centres.
-DX = F{frame}.X;
-DY = F{frame}.Y;
-DZ = -4.2832 * F{frame}.Z;
-shift = -min(DZ);
+% Number of mesh refinements of the unit sphere triangulation.
+ref = 7;
 
-% Fit sphere.
-sc = mean([DX, DY, DZ + shift]);
-sr = 300;
-[sc, sr] = spherefit([DX, DY, DZ + shift], sc, sr);
-DX = DX - sc(1);
-DY = DY - sc(2);
-DZ = DZ - sc(3) + shift;
+% Create triangulation of the unit sphere.
+[F, V] = sphTriang(ref);
 
-% Fit spherical surface.
-c = surffit(Ns, [DX, DY, DZ], alpha, s);
-
-% Create triangulation.
-[F, V] = sphTriang(7);
-
-% Get nodal points on surface.
-Vn = normalise(trinodalpts2(F, V));
-
-% Compute synthesis at nodal points.
-[Vn, ~] = surfsynth(Ns, Vn, c);
-
-% Compute synthesis at vertices.
-[Vs, rho] = surfsynth(Ns, V, c);
-
-% Plot function rho on the unit sphere.
-figure;
-hold on;
-axis([-1, 1, -1, 1, -1, 1]);
-trisurf(F, V(:, 1), V(:, 2), V(:, 3), rho, 'EdgeColor', 'none');
-shading interp;
-daspect([1, 1, 1]);
-view(3);
-colorbar;
-
-% Plot surface.
-figure;
-hold on;
-trisurf(F, Vs(:, 1), Vs(:, 2), Vs(:, 3));
-shading interp;
-daspect([1, 1, 1]);
-view(3);
-
-figure;
 f = cell(2);
-for k=1:2
+fq = cell(2);
+for k=[2, 1]
+    frame = frames(k);
+
+    % Prepare cell centres.
+    X = xscale * C.F{frame}.X;
+    Y = yscale * C.F{frame}.Y;
+    Z = -zscale * C.F{frame}.Z;
+    shift = -min(Z);
+
+    % Fit sphere.
+    sc = mean([X, Y, Z + shift]);
+    sr = 300;
+    [sc, sr] = spherefit([X, Y, Z + shift], sc, sr);
+
+    % Center data.
+    X = X - sc(1);
+    Y = Y - sc(2);
+    Z = Z - sc(3) + shift;
+
+    % Fit sphere-like surface.
+    c = surffit(Ns, [X, Y, Z], beta, s);
+
+    % Get nodal points on surface.
+    Vn = normalise(trinodalpts2(F, V));
+
+    % Compute synthesis at nodal points.
+    [Vn, rhon] = surfsynth(Ns, Vn, c);
+
+    % Compute synthesis at vertices.
+    [Vs, rho] = surfsynth(Ns, V, c);
+
     % Prepare data.
-    img = flipdim(U{k}.u, 3);
+    u = flipdim(U{k}.u, 3);
 
     % Project data.
-    [um, un, uo] = size(img);
+    [um, un, uo] = size(u);
     [X, Y, Z] = ndgrid(1:um, 1:un, 1:uo);
 
-    % Compute radial maximum intensity projection.
-    rs = linspace(0.8, 1.2, 80);
+    % Compute radial maximum intensity projection at vertices.
+    rs = linspace(bandwidth(1), bandwidth(2), layers);
     VB = kron(rs', Vs);
-    fb = dataFromCube(sc(1)+VB(:, 1), sc(2)+VB(:, 2), sc(3)+VB(:, 3), X, Y, 4.2832 * Z, img);
+    fb = dataFromCube(sc(1) + VB(:, 1), sc(2) + VB(:, 2), sc(3) + VB(:, 3), xscale * X, yscale * Y, zscale * Z, u);
     f{k} = max(reshape(fb, size(Vs, 1), length(rs)), [], 2);
-
-    % Compute projection at nodal points.
+    
+    % Compute radial maximum intensity projection at nodal points.
+    fq{k} = zeros(size(F, 1), 6);
     for q=1:6
         VB = kron(rs', Vn(:, :, q));
-        fb = dataFromCube(sc(1)+VB(:, 1), sc(2)+VB(:, 2), sc(3)+VB(:, 3), X, Y, 4.2832 * Z, img);
-        fq(:, q, k) = max(reshape(fb, size(Vn, 1), length(rs)), [], 2);
+        fb = dataFromCube(sc(1) + VB(:, 1), sc(2) + VB(:, 2), sc(3) + VB(:, 3), xscale * X, yscale * Y, zscale * Z, u);
+        fq{k}(:, q) = max(reshape(fb, size(Vn, 1), length(rs)), [], 2);
     end
     
-    subplot(2, 2, k);
+    % Plot function rho on the unit sphere.
+    figure;
+    hold on;
+    axis([-1, 1, -1, 1, -1, 1]);
+    trisurf(F, V(:, 1), V(:, 2), V(:, 3), rho, 'EdgeColor', 'none');
+    shading interp;
+    daspect([1, 1, 1]);
+    view(3);
+    colorbar;
+
+    % Plot surface.
+    figure;
+    hold on;
+    trisurf(F, Vs(:, 1), Vs(:, 2), Vs(:, 3));
+    shading interp;
+    daspect([1, 1, 1]);
+    view(3);
+    
+    % Plot data.
+    figure;
+    subplot(1, 2, 1);
     trisurf(F, Vs(:, 1), Vs(:, 2), Vs(:, 3), f{k}, 'EdgeColor', 'none');
     shading interp;
     daspect([1, 1, 1]);
     view(3);
     
-    subplot(2, 2, 2+k);
+    subplot(1, 2, 2);
     axis([-1, 1, -1, 1, -1, 1]);
     trisurf(F, V(:, 1), V(:, 2), V(:, 3), f{k}, 'EdgeColor', 'none');
     shading interp;
@@ -130,22 +160,18 @@ for k=1:2
 end
 
 % Free memory.
+clear C;
 clear VB;
 clear U;
+clear u;
 clear X;
 clear Y;
 clear Z;
 clear fb;
 
-% Set parameters.
-N = 5;
-h = 1;
-alpha = 1;
-deg = 1;
-
 disp('Computing optical flow...');
 tic;
-u = ofish(N, Ns, c, F, V, fq(:, :, 1), fq(:, :, 2), h, deg, alpha);
+u = ofish(N, Ns, c, F, V, fq{1}, fq{2}, h, deg, alpha);
 toc;
 
 % Get incenters of triangles.

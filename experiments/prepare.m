@@ -33,12 +33,10 @@ load(fullfile(path, filename));
 
 % Import cell centres.
 disp('Loading cell centres.');
-load(fullfile(path, 'thresholdedcenters.mat'));
+C = load(fullfile(path, 'thresholdedcenters.mat'));
 
 % Define cell centres.
-%frame = 114;
-%frame = 120;
-frame = 140;
+frames = [140, 142];
 
 % Scaling in z-direction.
 xscale = 1.6774;
@@ -46,13 +44,13 @@ yscale = 1.6774;
 zscale = 7.1847;
 
 % Set degrees of vector spherical harmonics basis.
-N = 1:100;
+N = 1:30;
 
 % Finite difference time parameter.
 h = 1;
 
 % Specify memory to use.
-mem = 80e9;
+mem = 100e9;
 
 % Numerical integration tolerance.
 tol = 1e-6;
@@ -65,46 +63,48 @@ bandwidth = [0.8, 1.2];
 layers = 80;
 
 % Set surface fitting parameters.
-Ns = 0:100;
+Ns = 0:30;
 beta = 0.25;
 s = 1;
 
 % Number of mesh refinements of the unit sphere triangulation.
 ref = 7;
 
-% Prepare cell centres.
-X = xscale * F{frame}.X;
-Y = yscale * F{frame}.Y;
-Z = -zscale * F{frame}.Z;
-shift = -min(Z);
-
-% Fit sphere.
-sc = mean([X, Y, Z + shift]);
-sr = 300;
-[sc, sr] = spherefit([X, Y, Z + shift], sc, sr);
-
-% Center data.
-X = X - sc(1);
-Y = Y - sc(2);
-Z = Z - sc(3) + shift;
-
-% Fit sphere-like surface.
-c = surffit(Ns, [X, Y, Z], beta, s);
-
 % Create triangulation of the unit sphere.
 [F, V] = sphTriang(ref);
 
-% Get nodal points on surface.
-Vn = normalise(trinodalpts2(F, V));
-
-% Compute synthesis at nodal points.
-[Vn, rhon] = surfsynth(Ns, Vn, c);
-
-% Compute synthesis at vertices.
-[Vs, rho] = surfsynth(Ns, V, c);
-
 f = cell(2);
-for k=1:2
+for k=[2, 1]
+    frame = frames(k);
+
+    % Prepare cell centres.
+    X = xscale * C.F{frame}.X;
+    Y = yscale * C.F{frame}.Y;
+    Z = -zscale * C.F{frame}.Z;
+    shift = -min(Z);
+
+    % Fit sphere.
+    sc = mean([X, Y, Z + shift]);
+    sr = 300;
+    [sc, sr] = spherefit([X, Y, Z + shift], sc, sr);
+
+    % Center data.
+    X = X - sc(1);
+    Y = Y - sc(2);
+    Z = Z - sc(3) + shift;
+
+    % Fit sphere-like surface.
+    c = surffit(Ns, [X, Y, Z], beta, s);
+
+    % Get nodal points on surface.
+    Vn = normalise(trinodalpts2(F, V));
+
+    % Compute synthesis at nodal points.
+    [Vn, rhon] = surfsynth(Ns, Vn, c);
+
+    % Compute synthesis at vertices.
+    [Vs, rho] = surfsynth(Ns, V, c);
+
     % Prepare data.
     u = flipdim(U{k}.u, 3);
 
@@ -123,7 +123,9 @@ for k=1:2
     f{k} = fq;
 end
 
+
 % Free memory.
+clear C;
 clear VB;
 clear U;
 clear u;
