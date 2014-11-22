@@ -44,7 +44,7 @@ yscale = 1.6774;
 zscale = 7.1847;
 
 % Set degrees of vector spherical harmonics basis.
-N = 1:30;
+N = 1:50;
 
 % Finite difference time parameter.
 h = 1;
@@ -63,8 +63,8 @@ bandwidth = [0.8, 1.2];
 layers = 80;
 
 % Set surface fitting parameters.
-Ns = 0:30;
-beta = 0.25;
+Ns = 0:50;
+beta = 0.5;
 s = 1;
 
 % Number of mesh refinements of the unit sphere triangulation.
@@ -78,8 +78,8 @@ for k=[2, 1]
     frame = frames(k);
 
     % Prepare cell centres.
-    X = xscale * C.F{frame}.X;
-    Y = yscale * C.F{frame}.Y;
+    X = xscale * C.F{frame}.Y;
+    Y = yscale * C.F{frame}.X;
     Z = -zscale * C.F{frame}.Z;
     shift = -min(Z);
 

@@ -45,7 +45,7 @@ yscale = 1.6774;
 zscale = 7.1847;
 
 % Set maximum degree of vector spherical harmonics basis.
-N = 5;
+N = 10;
 
 % Set regularisation parameter for optical flow.
 alpha = 1;
@@ -62,7 +62,7 @@ layers = 80;
 
 % Set surface fitting parameters.
 Ns = 0:10;
-beta = 0.25;
+beta = 0.5;
 s = 1;
 
 % Number of mesh refinements of the unit sphere triangulation.
@@ -76,9 +76,9 @@ fq = cell(2);
 for k=[2, 1]
     frame = frames(k);
 
-    % Prepare cell centres.
-    X = xscale * C.F{frame}.X;
-    Y = yscale * C.F{frame}.Y;
+    % Prepare cell centres (and flip X and Y axis).
+    X = xscale * C.F{frame}.Y;
+    Y = yscale * C.F{frame}.X;
     Z = -zscale * C.F{frame}.Z;
     shift = -min(Z);
 
