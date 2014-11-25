@@ -145,6 +145,7 @@ for k=[2, 1]
     
     % Plot data.
     figure;
+    colormap(cmap);
     subplot(1, 2, 1);
     trisurf(F, Vs(:, 1), Vs(:, 2), Vs(:, 3), f{k}, 'EdgeColor', 'none');
     shading interp;
@@ -172,7 +173,8 @@ clear fb;
 disp('Computing optical flow...');
 tic;
 u = ofish(N, Ns, c, F, V, fq{1}, fq{2}, h, deg, alpha);
-toc;
+elapsedTime = toc(ticId);
+fprintf('Elapsed time %.6f seconds.\n', elapsedTime);
 
 % Get incenters of triangles.
 TR = TriRep(F, Vs);
