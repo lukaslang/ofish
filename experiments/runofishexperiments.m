@@ -42,7 +42,7 @@ tol = 1e-6;
 maxit = 100;
 
 % Set range for alpha.
-rng1 = [1e-3, 1e-2, 1e-1, 0, 1, 1e1, 1e2, 1e3];
+rng1 = [1e-3, 1e-2, 1e-1, 0, 1e0, 1e1, 1e2, 1e3];
 
 % Run experiments.
 run = 1;
