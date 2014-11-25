@@ -73,8 +73,8 @@ ref = 7;
 % Create triangulation of the unit sphere.
 [F, V] = sphTriang(ref);
 
-f = cell(2);
-for k=[2, 1]
+S = cell(2);
+for k=1:2
     frame = frames(k);
 
     % Prepare cell centres.
@@ -114,18 +114,28 @@ for k=[2, 1]
 
     % Compute radial maximum intensity projection at nodal points.
     rs = linspace(bandwidth(1), bandwidth(2), layers);
-    fq = zeros(size(F, 1), 6);
+    fn = zeros(size(F, 1), 6);
     for q=1:6
         VB = kron(rs', Vn(:, :, q));
         fb = dataFromCube(sc(1) + VB(:, 1), sc(2) + VB(:, 2), sc(3) + VB(:, 3), xscale * X, yscale * Y, zscale * Z, u);
-        fq(:, q) = max(reshape(fb, size(Vn, 1), length(rs)), [], 2);
+        fn(:, q) = max(reshape(fb, size(Vn, 1), length(rs)), [], 2);
     end
-    f{k} = fq;
+    
+    % Store surface data.
+    S{k}.F = F;
+    S{k}.V = V;
+    S{k}.Vs = Vs;
+    S{k}.rho = rho;
+    S{k}.rhon = rhon;
+    S{k}.fn = fn;
+    S{k}.c = c;    
+    S{k}.f = fn;
 end
-
 
 % Free memory.
 clear C;
+clear F;
+clear V;
 clear VB;
 clear U;
 clear u;
@@ -133,7 +143,7 @@ clear X;
 clear Y;
 clear Z;
 clear fb;
-clear fq;
+clear fn;
 
 % Create output directory.
 path = fullfile(path, 'generated');
@@ -142,7 +152,7 @@ mkdir(path);
 [~, file, ~] = fileparts(filename);
 disp('Computing linear system.');
 tic;
-[dim, A, D, b] = surflinearsystem(F, V, Ns, c, N, f{1}, f{2}, h, deg, tol, mem);
+[dim, A, D, b] = surflinearsystem(S{1}.F, S{1}.V, Ns, S{1}.c, N, S{1}.f, S{2}.f, h, deg, tol, mem);
 elapsed = toc;
 fprintf('Elapsed time is %.6f seconds.\n', elapsed);
 
@@ -153,6 +163,6 @@ datFile = fullfile(path, sprintf('dat-%s-%i-%i-%i.mat', file, N(1), N(end), ref)
 % Write output.
 disp('Saving generated data.');
 tic;
-save(datFile, 'F', 'V', 'Vs', 'rho', 'rhon', 'f', 'Ns', 'c', 'N', 'ref', 'sc', 'sr', 's', 'beta', 'h', 'name', 'tol', 'deg', 'elapsed', 'bandwidth', 'layers', 'frame', '-v7.3');
+save(datFile, 'S', 'Ns', 'c', 'N', 'ref', 'sc', 'sr', 's', 'beta', 'h', 'name', 'tol', 'deg', 'elapsed', 'bandwidth', 'layers', '-v7.3');
 save(genFile, 'dim', 'A', 'D', 'b', '-v7.3');
 toc;

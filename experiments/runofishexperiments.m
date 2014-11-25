@@ -66,16 +66,19 @@ end
 disp('Recovering vector fields.');
 ticId = tic;
 
+% Choose surface.
+S = D.S{1};
+
 % Specify evaluation points.
-xi = repmat([1/3, 1/3], size(D.F, 1), 1);
+xi = repmat([1/3, 1/3], size(S.F, 1), 1);
 
 % Compute tangent basis on surface.
-[Dx, Dy] = surftanBasis(D.F, D.V, D.rhon, xi);
+[Dx, Dy] = surftanBasis(S.F, S.V, S.rhon, xi);
 
 % Save to experiments.
 for k=1:runs
     % Compute synthesis.
-    [Yx, Yy] = trivspharmsynth(D.N, D.F, D.V, E{k}.u, xi, mem);
+    [Yx, Yy] = trivspharmsynth(D.N, S.F, S.V, E{k}.u, xi, mem);
     
     % Recover vector field on the surface.
     E{k}.U = bsxfun(@times, Yx, Dx) + bsxfun(@times, Yy, Dy);
