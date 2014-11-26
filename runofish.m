@@ -171,7 +171,7 @@ clear Z;
 clear fb;
 
 disp('Computing optical flow...');
-tic;
+ticId = tic;
 u = ofish(N, Ns, c, F, V, fq{1}, fq{2}, h, deg, alpha);
 elapsedTime = toc(ticId);
 fprintf('Elapsed time %.6f seconds.\n', elapsedTime);
