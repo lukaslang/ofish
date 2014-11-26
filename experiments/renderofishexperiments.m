@@ -21,13 +21,13 @@ clc;
 % Define dataset and get result files.
 name = 'cxcr4aMO2_290112';
 resultsPath = fullfile('./', 'results', name, 'ofish');
-resultsname = '2014-11-25-14-47-16-frames-140-142-unfiltered-1-5-7';
+resultsname = '2014-11-25-10-53-35-frames-140-142-unfiltered-1-50-7';
 load(fullfile(resultsPath, sprintf('%s.mat', resultsname)));
 
 % Import data.
 disp('Loading precomputed data.');
 path = fullfile('./', 'data', name, 'generated');
-filename = 'frames-140-142-unfiltered-1-5-7';
+filename = 'frames-140-142-unfiltered-1-50-7';
 D = load(fullfile(path, sprintf('dat-%s.mat', filename)));
 
 % Load colormap for proper visualisation.
@@ -99,18 +99,18 @@ for l=1:2
     set(gca, 'XTick', -1:0.5:1);
     set(gca, 'YTick', -1:0.5:1);
     set(gca, 'ZTick', -1:0.5:1);
-    %savefigure(F, fullfile(renderPath, 'rho3', sprintf('rho3-%s-%i-600dpi.png', filename, l)), '-png', '-r600');
-    %savefigure(F, fullfile(renderPath, 'rho3', sprintf('rho3-%s-%i-1200dpi.png', filename, l)), '-png', '-r1200');
-    %savefigure(F, fullfile(renderPath, 'rho3', sprintf('rho3-%s-%i-600dpi.jpg', filename, l)), '-jpg', '-r600', '-q100');
-    %savefigure(F, fullfile(renderPath, 'rho3', sprintf('rho3-%s-%i-1200dpi.jpg', filename, l)), '-jpg', '-r1200', '-q100');
+    savefigure(F, fullfile(renderPath, 'rho3', sprintf('rho3-%s-%i-600dpi.png', filename, l)), '-png', '-r600');
+    savefigure(F, fullfile(renderPath, 'rho3', sprintf('rho3-%s-%i-1200dpi.png', filename, l)), '-png', '-r1200');
+    savefigure(F, fullfile(renderPath, 'rho3', sprintf('rho3-%s-%i-600dpi.jpg', filename, l)), '-jpg', '-r600', '-q100');
+    savefigure(F, fullfile(renderPath, 'rho3', sprintf('rho3-%s-%i-1200dpi.jpg', filename, l)), '-jpg', '-r1200', '-q100');
 
     % Rotate by pi.
     [az, el] = view;
     view(az + 180, el);
-    %savefigure(F, fullfile(renderPath, 'rho3', sprintf('rho3-%s-%i-rotated-600dpi.png', filename, l)), '-png', '-r600');
-    %savefigure(F, fullfile(renderPath, 'rho3', sprintf('rho3-%s-%i-rotated-1200dpi.png', filename, l)), '-png', '-r1200');
-    %savefigure(F, fullfile(renderPath, 'rho3', sprintf('rho3-%s-%i-rotated-600dpi.jpg', filename, l)), '-jpg', '-r600', '-q100');
-    %savefigure(F, fullfile(renderPath, 'rho3', sprintf('rho3-%s-%i-rotated-1200dpi.jpg', filename, l)), '-jpg', '-r1200', '-q100');
+    savefigure(F, fullfile(renderPath, 'rho3', sprintf('rho3-%s-%i-rotated-600dpi.png', filename, l)), '-png', '-r600');
+    savefigure(F, fullfile(renderPath, 'rho3', sprintf('rho3-%s-%i-rotated-1200dpi.png', filename, l)), '-png', '-r1200');
+    savefigure(F, fullfile(renderPath, 'rho3', sprintf('rho3-%s-%i-rotated-600dpi.jpg', filename, l)), '-jpg', '-r600', '-q100');
+    savefigure(F, fullfile(renderPath, 'rho3', sprintf('rho3-%s-%i-rotated-1200dpi.jpg', filename, l)), '-jpg', '-r1200', '-q100');
 
     colorbar;
     cbar = findobj(F, 'tag', 'Colorbar');
@@ -121,10 +121,10 @@ for l=1:2
     set(gca, 'XTick', -1:0.5:1);
     set(gca, 'YTick', -1:0.5:1);
     set(gca, 'ZTick', -1:0.5:1);
-    %savefigure(F, fullfile(renderPath, 'rho2', sprintf('rho2-%s-%i-600dpi.png', filename, l)), '-png', '-r600');
-    %savefigure(F, fullfile(renderPath, 'rho2', sprintf('rho2-%s-%i-1200dpi.png', filename, l)), '-png', '-r1200');
-    %savefigure(F, fullfile(renderPath, 'rho2', sprintf('rho2-%s-%i-600dpi.jpg', filename, l)), '-jpg', '-r600', '-q100');
-    %savefigure(F, fullfile(renderPath, 'rho2', sprintf('rho2-%s-%i-1200dpi.jpg', filename, l)), '-jpg', '-r1200', '-q100');
+    savefigure(F, fullfile(renderPath, 'rho2', sprintf('rho2-%s-%i-600dpi.png', filename, l)), '-png', '-r600');
+    savefigure(F, fullfile(renderPath, 'rho2', sprintf('rho2-%s-%i-1200dpi.png', filename, l)), '-png', '-r1200');
+    savefigure(F, fullfile(renderPath, 'rho2', sprintf('rho2-%s-%i-600dpi.jpg', filename, l)), '-jpg', '-r600', '-q100');
+    savefigure(F, fullfile(renderPath, 'rho2', sprintf('rho2-%s-%i-1200dpi.jpg', filename, l)), '-jpg', '-r1200', '-q100');
 
     % Convert data from nodal points to a data at vertices.
     fv = S.f(:, 1:3);
@@ -138,46 +138,46 @@ for l=1:2
     set(gca, 'YTick', -300:150:300);
     set(gca, 'ZTick', -300:150:300);
     adjustFigure3;
-    %savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-600dpi.png', filename, l)), '-png', '-r600');
-    %savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-1200dpi.png', filename, l)), '-png', '-r1200');
-    %savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-600dpi.jpg', filename, l)), '-jpg', '-r600', '-q100');
-    %savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-1200dpi.jpg', filename, l)), '-jpg', '-r1200', '-q100');
+    savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-600dpi.png', filename, l)), '-png', '-r600');
+    savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-1200dpi.png', filename, l)), '-png', '-r1200');
+    savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-600dpi.jpg', filename, l)), '-jpg', '-r600', '-q100');
+    savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-1200dpi.jpg', filename, l)), '-jpg', '-r1200', '-q100');
     
     % Rotate by pi.
     [az, el] = view;
     view(az + 180, el);
-    %savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-rotated-600dpi.png', filename, l)), '-png', '-r600');
-    %savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-rotated-1200dpi.png', filename, l)), '-png', '-r1200');
-    %savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-rotated-600dpi.jpg', filename, l)), '-jpg', '-r600', '-q100');
-    %savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-rotated-1200dpi.jpg', filename, l)), '-jpg', '-r1200', '-q100');
+    savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-rotated-600dpi.png', filename, l)), '-png', '-r600');
+    savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-rotated-1200dpi.png', filename, l)), '-png', '-r1200');
+    savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-rotated-600dpi.jpg', filename, l)), '-jpg', '-r600', '-q100');
+    savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-rotated-1200dpi.jpg', filename, l)), '-jpg', '-r1200', '-q100');
     
     view(2);
-    %savefigure(F, fullfile(renderPath, 'data2', sprintf('data2-%s-%i-600dpi.png', filename, l)), '-png', '-r600');
-    %savefigure(F, fullfile(renderPath, 'data2', sprintf('data2-%s-%i-1200dpi.png', filename, l)), '-png', '-r1200');
-    %savefigure(F, fullfile(renderPath, 'data2', sprintf('data2-%s-%i-600dpi.jpg', filename, l)), '-jpg', '-r600', '-q100');
-    %savefigure(F, fullfile(renderPath, 'data2', sprintf('data2-%s-%i-1200dpi.jpg', filename, l)), '-jpg', '-r1200', '-q100');
+    savefigure(F, fullfile(renderPath, 'data2', sprintf('data2-%s-%i-600dpi.png', filename, l)), '-png', '-r600');
+    savefigure(F, fullfile(renderPath, 'data2', sprintf('data2-%s-%i-1200dpi.png', filename, l)), '-png', '-r1200');
+    savefigure(F, fullfile(renderPath, 'data2', sprintf('data2-%s-%i-600dpi.jpg', filename, l)), '-jpg', '-r600', '-q100');
+    savefigure(F, fullfile(renderPath, 'data2', sprintf('data2-%s-%i-1200dpi.jpg', filename, l)), '-jpg', '-r1200', '-q100');
     
     % Create a plot with grid.
     view(3);
     surf(Xm, Ym, Zm, ones(nsphere-2, nsphere), 'EdgeColor', [0.7, 0.7, 0.7], 'FaceColor', 'none', 'FaceAlpha', 1, 'EdgeAlpha', 1);
-    %savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-grid-600dpi.png', filename, l)), '-png', '-r600');
-    %savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-grid-1200dpi.png', filename, l)), '-png', '-r1200');
-    %savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-grid-600dpi.jpg', filename, l)), '-jpg', '-r600', '-q100');
-    %savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-grid-1200dpi.jpg', filename, l)), '-jpg', '-r1200', '-q100');
+    savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-grid-600dpi.png', filename, l)), '-png', '-r600');
+    savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-grid-1200dpi.png', filename, l)), '-png', '-r1200');
+    savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-grid-600dpi.jpg', filename, l)), '-jpg', '-r600', '-q100');
+    savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-grid-1200dpi.jpg', filename, l)), '-jpg', '-r1200', '-q100');
     
     % Rotate by pi.
     [az, el] = view;
     view(az + 180, el);
-    %savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-grid-rotated-600dpi.png', filename, l)), '-png', '-r600');
-    %savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-grid-rotated-1200dpi.png', filename, l)), '-png', '-r1200');
-    %savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-grid-rotated-600dpi.jpg', filename, l)), '-jpg', '-r600', '-q100');
-    %savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-grid-rotated-1200dpi.jpg', filename, l)), '-jpg', '-r1200', '-q100');
+    savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-grid-rotated-600dpi.png', filename, l)), '-png', '-r600');
+    savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-grid-rotated-1200dpi.png', filename, l)), '-png', '-r1200');
+    savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-grid-rotated-600dpi.jpg', filename, l)), '-jpg', '-r600', '-q100');
+    savefigure(F, fullfile(renderPath, 'data3', sprintf('data3-%s-%i-grid-rotated-1200dpi.jpg', filename, l)), '-jpg', '-r1200', '-q100');
 
     view(2);
-    %savefigure(F, fullfile(renderPath, 'data2', sprintf('data2-%s-%i-grid-600dpi.png', filename, l)), '-png', '-r600');
-    %savefigure(F, fullfile(renderPath, 'data2', sprintf('data2-%s-%i-grid-1200dpi.png', filename, l)), '-png', '-r1200');
-    %savefigure(F, fullfile(renderPath, 'data2', sprintf('data2-%s-%i-grid-600dpi.jpg', filename, l)), '-jpg', '-r600', '-q100');
-    %savefigure(F, fullfile(renderPath, 'data2', sprintf('data2-%s-%i-grid-1200dpi.jpg', filename, l)), '-jpg', '-r1200', '-q100');
+    savefigure(F, fullfile(renderPath, 'data2', sprintf('data2-%s-%i-grid-600dpi.png', filename, l)), '-png', '-r600');
+    savefigure(F, fullfile(renderPath, 'data2', sprintf('data2-%s-%i-grid-1200dpi.png', filename, l)), '-png', '-r1200');
+    savefigure(F, fullfile(renderPath, 'data2', sprintf('data2-%s-%i-grid-600dpi.jpg', filename, l)), '-jpg', '-r600', '-q100');
+    savefigure(F, fullfile(renderPath, 'data2', sprintf('data2-%s-%i-grid-1200dpi.jpg', filename, l)), '-jpg', '-r1200', '-q100');
 end
 
 % Open a file to save flow scaling.
@@ -227,22 +227,22 @@ set(gca, 'XTick', -300:150:300);
 set(gca, 'YTick', -300:150:300);
 set(gca, 'ZTick', -300:150:300);
 adjustFigure3;
-%savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-600dpi.png', filename, k)), '-png', '-r600');
-%savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-1200dpi.png', filename, k)), '-png', '-r1200');
-%savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-600dpi.jpg', filename, k)), '-jpg', '-r600', '-q100');
-%savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-1200dpi.jpg', filename, k)), '-jpg', '-r1200', '-q100');
+savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-600dpi.png', filename, k)), '-png', '-r600');
+savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-1200dpi.png', filename, k)), '-png', '-r1200');
+savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-600dpi.jpg', filename, k)), '-jpg', '-r600', '-q100');
+savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-1200dpi.jpg', filename, k)), '-jpg', '-r1200', '-q100');
 % Rotate by pi.
 [az, el] = view;
 view(az + 180, el);
-%savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-rotated-600dpi.png', filename, k)), '-png', '-r600');
-%savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-rotated-1200dpi.png', filename, k)), '-png', '-r1200');
-%savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-rotated-600dpi.jpg', filename, k)), '-jpg', '-r600', '-q100');
-%savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-rotated-1200dpi.jpg', filename, k)), '-jpg', '-r1200', '-q100');
+savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-rotated-600dpi.png', filename, k)), '-png', '-r600');
+savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-rotated-1200dpi.png', filename, k)), '-png', '-r1200');
+savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-rotated-600dpi.jpg', filename, k)), '-jpg', '-r600', '-q100');
+savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-rotated-1200dpi.jpg', filename, k)), '-jpg', '-r1200', '-q100');
 view(2);
-%savefigure(F, fullfile(renderPath, 'flow2', sprintf('flow2-%s-%i-600dpi.png', filename, k)), '-png', '-r600');
-%savefigure(F, fullfile(renderPath, 'flow2', sprintf('flow2-%s-%i-1200dpi.png', filename, k)), '-png', '-r1200');
-%savefigure(F, fullfile(renderPath, 'flow2', sprintf('flow2-%s-%i-600dpi.jpg', filename, k)), '-jpg', '-r600', '-q100');
-%savefigure(F, fullfile(renderPath, 'flow2', sprintf('flow2-%s-%i-1200dpi.jpg', filename, k)), '-jpg', '-r1200', '-q100');
+savefigure(F, fullfile(renderPath, 'flow2', sprintf('flow2-%s-%i-600dpi.png', filename, k)), '-png', '-r600');
+savefigure(F, fullfile(renderPath, 'flow2', sprintf('flow2-%s-%i-1200dpi.png', filename, k)), '-png', '-r1200');
+savefigure(F, fullfile(renderPath, 'flow2', sprintf('flow2-%s-%i-600dpi.jpg', filename, k)), '-jpg', '-r600', '-q100');
+savefigure(F, fullfile(renderPath, 'flow2', sprintf('flow2-%s-%i-1200dpi.jpg', filename, k)), '-jpg', '-r1200', '-q100');
 
 close all;
 end
