@@ -218,10 +218,14 @@ fprintf(fid, 'Experiment %i: %.4f\n', k, nmax);
 % Choose surface.
 S = D.S{1};
 
+% Create colourwheel.
+cw = colourwheelbg;
+
 % Plot data and flows.
 F = createFigure3(cmap);
 c = double(squeeze(computeColour(U(:, 1)/nmax, U(:, 2)/nmax))) ./ 255;
 trisurf(S.F, S.Vs(:, 1), S.Vs(:, 2), S.Vs(:, 3), 'FaceColor', 'flat', 'FaceVertexCData', c, 'EdgeColor', 'none');
+C = surf(-330:-131, -330:-131, -300*ones(200, 200), cw, 'FaceColor','texturemap', 'EdgeColor', 'none');
 view(3);
 set(gca, 'XTick', -300:150:300);
 set(gca, 'YTick', -300:150:300);
@@ -231,14 +235,18 @@ savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-600dpi.png', fi
 savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-1200dpi.png', filename, k)), '-png', '-r1200');
 savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-600dpi.jpg', filename, k)), '-jpg', '-r600', '-q100');
 savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-1200dpi.jpg', filename, k)), '-jpg', '-r1200', '-q100');
+delete(C);
 % Rotate by pi.
 [az, el] = view;
 view(az + 180, el);
+C = surf(131:330, 131:330, -300*ones(200, 200), cw, 'FaceColor','texturemap', 'EdgeColor', 'none');
 savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-rotated-600dpi.png', filename, k)), '-png', '-r600');
 savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-rotated-1200dpi.png', filename, k)), '-png', '-r1200');
 savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-rotated-600dpi.jpg', filename, k)), '-jpg', '-r600', '-q100');
 savefigure(F, fullfile(renderPath, 'flow3', sprintf('flow3-%s-%i-rotated-1200dpi.jpg', filename, k)), '-jpg', '-r1200', '-q100');
+delete(C);
 view(2);
+C = surf(231:330, -330:-231, zeros(100, 100), cw, 'FaceColor','texturemap', 'EdgeColor', 'none');
 savefigure(F, fullfile(renderPath, 'flow2', sprintf('flow2-%s-%i-600dpi.png', filename, k)), '-png', '-r600');
 savefigure(F, fullfile(renderPath, 'flow2', sprintf('flow2-%s-%i-1200dpi.png', filename, k)), '-png', '-r1200');
 savefigure(F, fullfile(renderPath, 'flow2', sprintf('flow2-%s-%i-600dpi.jpg', filename, k)), '-jpg', '-r600', '-q100');
