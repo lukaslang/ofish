@@ -24,6 +24,8 @@ libraryPath = 'Z:\libraries\';
 addpath(genpath(fullfile(libraryPath, 'matlab_xunit\')));
 % Export Figure is required for saving figures.
 addpath(genpath(fullfile(libraryPath, 'visualization\export_fig\')));
+% Vol3d required for visualisation of volumetric data.
+addpath(genpath(fullfile(libraryPath, 'visualization\vol3d\')));
 
 % Add OFD.
 ofdPath = 'Z:\git\ofd';

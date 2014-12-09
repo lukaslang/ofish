@@ -40,7 +40,7 @@ C = load(fullfile(path, 'thresholdedcenters.mat'));
 %frames = [140, 142];
 frames = [142, 144];
 
-% Scaling in z-direction.
+% Scaling of data.
 xscale = 1.6774;
 yscale = 1.6774;
 zscale = 7.1847;
