@@ -24,7 +24,13 @@ name = 'cxcr4aMO2_290112';
 % Import data.
 disp('Loading precomputed data.');
 path = fullfile('./', 'data', name, 'generated', 'surface');
-filename = 'frames-140-142-unfiltered-0-50-7';
+%filename = 'frames-136-138-unfiltered-0-50-7';
+%filename = 'frames-138-140-unfiltered-0-50-7';
+%filename = 'frames-140-142-unfiltered-0-50-7';
+%filename = 'frames-142-144-unfiltered-0-50-7';
+%filename = 'frames-144-146-unfiltered-0-50-7';
+%filename = 'frames-146-148-unfiltered-0-50-7';
+filename = 'frames-148-150-unfiltered-0-50-7';
 D = load(fullfile(path, sprintf('surf-%s.mat', filename)));
 
 % Load colormap for proper visualisation.
