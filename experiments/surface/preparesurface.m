@@ -55,8 +55,8 @@ layers = 80;
 
 % Set surface fitting parameters.
 Ns = 0:50;
-beta = 0.5;
-s = 1;
+beta = 1e-4;
+s = 3+eps;
 
 % Number of mesh refinements of the unit sphere triangulation.
 ref = 7;
