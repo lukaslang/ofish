@@ -30,6 +30,7 @@ xi = repmat([1/3, 1/3], m ,1);
 rho = ones(m, 6);
 detphi = detpushforward(F, V, rho, xi);
 assertFalse(isempty(detphi));
+assertEqual(size(detphi), [m, 1]);
 assertAlmostEqual(detphi, ones(m, 1));
 
 end
@@ -47,6 +48,7 @@ xi = repmat([1/3, 1/3], [m, 1, nq]);
 rho = ones(m, 6);
 detphi = detpushforward(F, V, rho, xi);
 assertFalse(isempty(detphi));
+assertEqual(size(detphi), [m, nq]);
 assertAlmostEqual(detphi, ones(m, nq));
 
 end
