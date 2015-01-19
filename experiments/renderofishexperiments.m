@@ -21,15 +21,16 @@ clc;
 % Define dataset and get result files.
 name = 'cxcr4aMO2_290112';
 resultsPath = fullfile('./', 'results', name, 'ofish');
-%resultsname = '2014-11-25-10-53-35-frames-140-142-unfiltered-1-50-7';
-resultsname = '2014-12-03-11-14-55-frames-142-144-unfiltered-1-50-7';
+%resultsname = '2015-01-16-09-23-29-frames-140-142-unfiltered-1-30-7';
+resultsname = '2015-01-19-15-08-07-frames-140-142-unfiltered-1-50-7';
 load(fullfile(resultsPath, sprintf('%s.mat', resultsname)));
 
 % Import data.
 disp('Loading precomputed data.');
 path = fullfile('./', 'data', name, 'generated');
-%filename = 'frames-140-142-unfiltered-1-50-7';
-filename = 'frames-142-144-unfiltered-1-50-7';
+%filename = 'frames-140-142-unfiltered-1-30-7';
+filename = 'frames-140-142-unfiltered-1-50-7';
+%filename = 'frames-142-144-unfiltered-1-50-7';
 D = load(fullfile(path, sprintf('dat-%s.mat', filename)));
 
 % Load colormap for proper visualisation.
