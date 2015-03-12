@@ -41,7 +41,7 @@ function quadratureDimTest
 [F, V] = sphTriang;
 m = size(F, 1);
 
-nq = 3;
+nq = 4;
 xi = repmat([1/3, 1/3], [m, 1, nq]);
 
 % Check with constant function rho.
