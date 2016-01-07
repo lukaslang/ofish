@@ -25,7 +25,8 @@ path = fullfile('./', 'data', name, 'generated');
 
 % Load file.
 %filename = 'frames-140-142-unfiltered-1-50-7';
-filename = 'frames-140-141-unfiltered-1-50-7-sphere';
+filename = 'frames-140-141-unfiltered-1-50-7';
+%filename = 'frames-140-141-unfiltered-1-50-7-sphere';
 D = load(fullfile(path, sprintf('dat-%s.mat', filename)));
 G = load(fullfile(path, sprintf('gen-%s.mat', filename)));
 

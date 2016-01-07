@@ -77,37 +77,38 @@ ref = 7;
 % Create triangulation of the unit sphere.
 [F, V] = sphTriang(ref);
 
+% Prepare cell centres of first frame.
+frame = frames(1);
+X = xscale * C.F{frame}.Y;
+Y = yscale * C.F{frame}.X;
+Z = -zscale * C.F{frame}.Z;
+shift = -min(Z);
+
+% Fit sphere.
+sc = mean([X, Y, Z + shift]);
+sr = 300;
+[sc, sr] = spherefit([X, Y, Z + shift], sc, sr);
+
+% Center data.
+X = X - sc(1);
+Y = Y - sc(2);
+Z = Z - sc(3) + shift;
+
+% Fit sphere-like surface.
+c = surffit(Ns, [X, Y, Z], beta, s);
+
+% Get nodal points on surface.
+Vn = normalise(trinodalpts2(F, V));
+
+% Compute synthesis at nodal points.
+[Vn, rhon] = surfsynth(Ns, Vn, c);
+
+% Compute synthesis at vertices.
+[Vs, rho] = surfsynth(Ns, V, c);
+
 S = cell(2);
 for k=1:2
     frame = frames(k);
-
-    % Prepare cell centres.
-    X = xscale * C.F{frame}.Y;
-    Y = yscale * C.F{frame}.X;
-    Z = -zscale * C.F{frame}.Z;
-    shift = -min(Z);
-
-    % Fit sphere.
-    sc = mean([X, Y, Z + shift]);
-    sr = 300;
-    [sc, sr] = spherefit([X, Y, Z + shift], sc, sr);
-
-    % Center data.
-    X = X - sc(1);
-    Y = Y - sc(2);
-    Z = Z - sc(3) + shift;
-
-    % Fit sphere-like surface.
-    c = surffit(Ns, [X, Y, Z], beta, s);
-
-    % Get nodal points on surface.
-    Vn = normalise(trinodalpts2(F, V));
-
-    % Compute synthesis at nodal points.
-    [Vn, rhon] = surfsynth(Ns, Vn, c);
-
-    % Compute synthesis at vertices.
-    [Vs, rho] = surfsynth(Ns, V, c);
 
     % Prepare data.
     u = flipdim(U{k}.u, 3);

@@ -77,6 +77,18 @@ ref = 7;
 % Create triangulation of the unit sphere.
 [F, V] = sphTriang(ref);
 
+% Prepare cell centres of first frame.
+frame = frames(1);
+X = xscale * C.F{frame}.Y;
+Y = yscale * C.F{frame}.X;
+Z = -zscale * C.F{frame}.Z;
+shift = -min(Z);
+
+% Fit sphere.
+sc = mean([X, Y, Z + shift]);
+sr = 300;
+[sc, sr] = spherefit([X, Y, Z + shift], sc, sr);
+
 S = cell(2);
 for k=1:2
     frame = frames(k);
@@ -85,12 +97,6 @@ for k=1:2
     X = xscale * C.F{frame}.Y;
     Y = yscale * C.F{frame}.X;
     Z = -zscale * C.F{frame}.Z;
-    shift = -min(Z);
-
-    % Fit sphere.
-    sc = mean([X, Y, Z + shift]);
-    sr = 300;
-    [sc, sr] = spherefit([X, Y, Z + shift], sc, sr);
 
     % Center data.
     X = X - sc(1);
