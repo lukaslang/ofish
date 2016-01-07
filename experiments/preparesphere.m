@@ -22,7 +22,8 @@ clc;
 name = 'cxcr4aMO2_290112';
 %filename = 'frames-114-116-unfiltered.mat';
 %filename = 'frames-120-122-unfiltered.mat';
-filename = 'frames-140-142-unfiltered.mat';
+filename = 'frames-140-141-unfiltered.mat';
+%filename = 'frames-140-142-unfiltered.mat';
 %filename = 'frames-142-144-unfiltered.mat';
 
 % Set working directory.
@@ -37,7 +38,8 @@ disp('Loading cell centres.');
 C = load(fullfile(path, 'thresholdedcenters.mat'));
 
 % Define cell centres.
-frames = [140, 142];
+frames = [140, 141];
+%frames = [140, 142];
 %frames = [142, 144];
 
 % Scaling of data.
