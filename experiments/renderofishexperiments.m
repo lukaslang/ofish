@@ -21,13 +21,15 @@ clc;
 % Define dataset and get result files.
 name = 'cxcr4aMO2_290112';
 resultsPath = fullfile('./', 'results', name, 'ofish');
-resultsname = '2015-03-20-11-00-47-frames-140-142-unfiltered-1-50-7';
+resultsname = '2016-01-10-15-53-14-frames-140-141-unfiltered-1-50-7';
+%resultsname = '2016-01-14-10-08-43-frames-140-141-unfiltered-1-50-7-sphere';
 load(fullfile(resultsPath, sprintf('%s.mat', resultsname)));
 
 % Import data.
 disp('Loading precomputed data.');
 path = fullfile('./', 'data', name, 'generated');
-filename = 'frames-140-142-unfiltered-1-50-7';
+filename = 'frames-140-141-unfiltered-1-50-7';
+%filename = 'frames-140-141-unfiltered-1-50-7-sphere';
 D = load(fullfile(path, sprintf('dat-%s.mat', filename)));
 
 % Load colormap for proper visualisation.
@@ -44,6 +46,12 @@ mkdir(fullfile(renderPath, 'flow2'));
 mkdir(fullfile(renderPath, 'flow3'));
 mkdir(fullfile(renderPath, 'rho2'));
 mkdir(fullfile(renderPath, 'rho3'));
+mkdir(fullfile(renderPath, 'surfvel2'));
+mkdir(fullfile(renderPath, 'surfvel3'));
+mkdir(fullfile(renderPath, 'signnormsurfvel2'));
+mkdir(fullfile(renderPath, 'signnormsurfvel3'));
+mkdir(fullfile(renderPath, 'motion2'));
+mkdir(fullfile(renderPath, 'motion3'));
 
 % Restriction allows to search among the results.
 %e = cell2mat(E);
@@ -87,7 +95,9 @@ for l=1:2
     
     % Plot function rho on the unit sphere.
     F = createFigure3;
-    caxis([rhomin rhomax]);
+    if(rhomax - rhomin > eps)
+        caxis([rhomin rhomax]);
+    end
     trisurf(S.F, S.V(:, 1), S.V(:, 2), S.V(:, 3), S.rho, 'EdgeColor', 'none');
     shading interp;
     view(3);
@@ -183,6 +193,98 @@ end
 % Open a file to save flow scaling.
 fid = fopen(fullfile(renderPath, 'radii.txt'), 'w');
 
+% Compute time derivative of rho at nodal points.
+veln = (D.S{2}.rhon - D.S{1}.rhon) ./ D.h;
+
+% Specify evaluation points.
+xi = repmat([1/3, 1/3], size(S.F, 1), 1);
+
+% Evaluate time derivative of rho at evaluation points.
+velev = triinterp2(veln, xi);
+
+% Compute surface velocity.
+vel = bsxfun(@times, velev, trimap(D.S{1}.F, D.S{1}.V, xi));
+
+% Recover vector field.
+velp = projecttoplane(vel);
+
+% Compute colour space scaling.
+nmax = max(sqrt(sum(velp.^2, 2)));
+
+% Save flow scaling.
+fprintf(fid, 'Surface velocity: %.4f\n', nmax);
+
+% Scale velocity.
+c = double(squeeze(computeColour(velp(:, 1)/nmax, velp(:, 2)/nmax))) ./ 255;
+
+% Create colourwheel.
+cw = colourwheelbg;
+
+% Plot surface velocity.
+F = createFigure3(cmap);
+trisurf(S.F, S.Vs(:, 1), S.Vs(:, 2), S.Vs(:, 3), 'FaceColor', 'flat', 'FaceVertexCData', c, 'EdgeColor', 'none');
+C = surf(-350:-151, -350:-151, -380*ones(200, 200), cw, 'FaceColor','texturemap', 'EdgeColor', 'none');
+view(3);
+set(gca, 'XTick', -450:150:450);
+set(gca, 'YTick', -450:150:450);
+set(gca, 'ZTick', -450:150:450);
+adjustFigure3;
+savefigure(F, fullfile(renderPath, 'surfvel3', sprintf('surfvel3-%s-%i-600dpi.png', filename, k)), '-png', '-r600');
+savefigure(F, fullfile(renderPath, 'surfvel3', sprintf('surfvel3-%s-%i-1200dpi.png', filename, k)), '-png', '-r1200');
+savefigure(F, fullfile(renderPath, 'surfvel3', sprintf('surfvel3-%s-%i-600dpi.jpg', filename, k)), '-jpg', '-r600', '-q100');
+savefigure(F, fullfile(renderPath, 'surfvel3', sprintf('surfvel3-%s-%i-1200dpi.jpg', filename, k)), '-jpg', '-r1200', '-q100');
+delete(C);
+% Rotate by pi.
+[az, el] = view;
+view(az + 180, el);
+C = surf(151:350, 151:350, -380*ones(200, 200), cw, 'FaceColor','texturemap', 'EdgeColor', 'none');
+savefigure(F, fullfile(renderPath, 'surfvel3', sprintf('surfvel3-%s-%i-rotated-600dpi.png', filename, k)), '-png', '-r600');
+savefigure(F, fullfile(renderPath, 'surfvel3', sprintf('surfvel3-%s-%i-rotated-1200dpi.png', filename, k)), '-png', '-r1200');
+savefigure(F, fullfile(renderPath, 'surfvel3', sprintf('surfvel3-%s-%i-rotated-600dpi.jpg', filename, k)), '-jpg', '-r600', '-q100');
+savefigure(F, fullfile(renderPath, 'surfvel3', sprintf('surfvel3-%s-%i-rotated-1200dpi.jpg', filename, k)), '-jpg', '-r1200', '-q100');
+delete(C);
+view(2);
+C = surf(281:380, -330:-231, zeros(100, 100), cw, 'FaceColor','texturemap', 'EdgeColor', 'none');
+savefigure(F, fullfile(renderPath, 'surfvel2', sprintf('surfvel2-%s-%i-600dpi.png', filename, k)), '-png', '-r600');
+savefigure(F, fullfile(renderPath, 'surfvel2', sprintf('surfvel2-%s-%i-1200dpi.png', filename, k)), '-png', '-r1200');
+savefigure(F, fullfile(renderPath, 'surfvel2', sprintf('surfvel2-%s-%i-600dpi.jpg', filename, k)), '-jpg', '-r600', '-q100');
+savefigure(F, fullfile(renderPath, 'surfvel2', sprintf('surfvel2-%s-%i-1200dpi.jpg', filename, k)), '-jpg', '-r1200', '-q100');
+
+% Compute signed norm.
+velnorm = sqrt(sum(vel.^2, 2));
+c = sign(velev) .* velnorm;
+
+% Plot signed norm of surface velocity.
+F = createFigure3(jet);
+trisurf(S.F, S.Vs(:, 1), S.Vs(:, 2), S.Vs(:, 3), 'FaceColor', 'flat', 'FaceVertexCData', c, 'EdgeColor', 'none');
+view(3);
+set(gca, 'XTick', -450:150:450);
+set(gca, 'YTick', -450:150:450);
+set(gca, 'ZTick', -450:150:450);
+adjustFigure3;
+savefigure(F, fullfile(renderPath, 'signnormsurfvel3', sprintf('signnormsurfvel3-%s-%i-600dpi.png', filename, k)), '-png', '-r600');
+savefigure(F, fullfile(renderPath, 'signnormsurfvel3', sprintf('signnormsurfvel3-%s-%i-1200dpi.png', filename, k)), '-png', '-r1200');
+savefigure(F, fullfile(renderPath, 'signnormsurfvel3', sprintf('signnormsurfvel3-%s-%i-600dpi.jpg', filename, k)), '-jpg', '-r600', '-q100');
+savefigure(F, fullfile(renderPath, 'signnormsurfvel3', sprintf('signnormsurfvel3-%s-%i-1200dpi.jpg', filename, k)), '-jpg', '-r1200', '-q100');
+% Rotate by pi.
+[az, el] = view;
+view(az + 180, el);
+savefigure(F, fullfile(renderPath, 'signnormsurfvel3', sprintf('signnormsurfvel3-%s-%i-rotated-600dpi.png', filename, k)), '-png', '-r600');
+savefigure(F, fullfile(renderPath, 'signnormsurfvel3', sprintf('signnormsurfvel3-%s-%i-rotated-1200dpi.png', filename, k)), '-png', '-r1200');
+savefigure(F, fullfile(renderPath, 'signnormsurfvel3', sprintf('signnormsurfvel3-%s-%i-rotated-600dpi.jpg', filename, k)), '-jpg', '-r600', '-q100');
+savefigure(F, fullfile(renderPath, 'signnormsurfvel3', sprintf('signnormsurfvel3-%s-%i-rotated-1200dpi.jpg', filename, k)), '-jpg', '-r1200', '-q100');
+
+colorbar;
+cbar = findobj(F, 'tag', 'Colorbar');
+%set(cbar, 'YTick', -10:2:6);
+set(cbar, 'TickLength', [.02 .02], 'YColor', [0 0 0]);
+view(2);
+adjustFigure3;
+savefigure(F, fullfile(renderPath, 'signnormsurfvel2', sprintf('signnormsurfvel2-%s-%i-600dpi.png', filename, k)), '-png', '-r600');
+savefigure(F, fullfile(renderPath, 'signnormsurfvel2', sprintf('signnormsurfvel2-%s-%i-1200dpi.png', filename, k)), '-png', '-r1200');
+savefigure(F, fullfile(renderPath, 'signnormsurfvel2', sprintf('signnormsurfvel2-%s-%i-600dpi.jpg', filename, k)), '-jpg', '-r600', '-q100');
+savefigure(F, fullfile(renderPath, 'signnormsurfvel2', sprintf('signnormsurfvel2-%s-%i-1200dpi.jpg', filename, k)), '-jpg', '-r1200', '-q100');
+
 for k=idx
 
 % Plot residual vector.
@@ -221,7 +323,7 @@ S = D.S{1};
 % Create colourwheel.
 cw = colourwheelbg;
 
-% Plot data and flows.
+% Plot optical flow.
 F = createFigure3(cmap);
 c = double(squeeze(computeColour(U(:, 1)/nmax, U(:, 2)/nmax))) ./ 255;
 trisurf(S.F, S.Vs(:, 1), S.Vs(:, 2), S.Vs(:, 3), 'FaceColor', 'flat', 'FaceVertexCData', c, 'EdgeColor', 'none');
@@ -252,7 +354,47 @@ savefigure(F, fullfile(renderPath, 'flow2', sprintf('flow2-%s-%i-1200dpi.png', f
 savefigure(F, fullfile(renderPath, 'flow2', sprintf('flow2-%s-%i-600dpi.jpg', filename, k)), '-jpg', '-r600', '-q100');
 savefigure(F, fullfile(renderPath, 'flow2', sprintf('flow2-%s-%i-1200dpi.jpg', filename, k)), '-jpg', '-r1200', '-q100');
 
-close all;
+% Recover total velocity.
+M = projecttoplane(E{k}.U + vel);
+
+% Compute colour space scaling.
+nmax = max(sqrt(sum(M.^2, 2)));
+
+% Save flow scaling.
+fprintf(fid, 'Experiment %i total motion: %.4f\n', k, nmax);
+
+% Plot total velocity.
+F = createFigure3(cmap);
+c = double(squeeze(computeColour(M(:, 1)/nmax, M(:, 2)/nmax))) ./ 255;
+trisurf(S.F, S.Vs(:, 1), S.Vs(:, 2), S.Vs(:, 3), 'FaceColor', 'flat', 'FaceVertexCData', c, 'EdgeColor', 'none');
+C = surf(-350:-151, -350:-151, -380*ones(200, 200), cw, 'FaceColor','texturemap', 'EdgeColor', 'none');
+view(3);
+set(gca, 'XTick', -450:150:450);
+set(gca, 'YTick', -450:150:450);
+set(gca, 'ZTick', -450:150:450);
+adjustFigure3;
+savefigure(F, fullfile(renderPath, 'motion3', sprintf('motion3-%s-%i-600dpi.png', filename, k)), '-png', '-r600');
+savefigure(F, fullfile(renderPath, 'motion3', sprintf('motion3-%s-%i-1200dpi.png', filename, k)), '-png', '-r1200');
+savefigure(F, fullfile(renderPath, 'motion3', sprintf('motion3-%s-%i-600dpi.jpg', filename, k)), '-jpg', '-r600', '-q100');
+savefigure(F, fullfile(renderPath, 'motion3', sprintf('motion3-%s-%i-1200dpi.jpg', filename, k)), '-jpg', '-r1200', '-q100');
+delete(C);
+% Rotate by pi.
+[az, el] = view;
+view(az + 180, el);
+C = surf(151:350, 151:350, -380*ones(200, 200), cw, 'FaceColor','texturemap', 'EdgeColor', 'none');
+savefigure(F, fullfile(renderPath, 'motion3', sprintf('motion3-%s-%i-rotated-600dpi.png', filename, k)), '-png', '-r600');
+savefigure(F, fullfile(renderPath, 'motion3', sprintf('motion3-%s-%i-rotated-1200dpi.png', filename, k)), '-png', '-r1200');
+savefigure(F, fullfile(renderPath, 'motion3', sprintf('motion3-%s-%i-rotated-600dpi.jpg', filename, k)), '-jpg', '-r600', '-q100');
+savefigure(F, fullfile(renderPath, 'motion3', sprintf('motion3-%s-%i-rotated-1200dpi.jpg', filename, k)), '-jpg', '-r1200', '-q100');
+delete(C);
+view(2);
+C = surf(281:380, -330:-231, zeros(100, 100), cw, 'FaceColor','texturemap', 'EdgeColor', 'none');
+savefigure(F, fullfile(renderPath, 'motion2', sprintf('motion2-%s-%i-600dpi.png', filename, k)), '-png', '-r600');
+savefigure(F, fullfile(renderPath, 'motion2', sprintf('motion2-%s-%i-1200dpi.png', filename, k)), '-png', '-r1200');
+savefigure(F, fullfile(renderPath, 'motion2', sprintf('motion2-%s-%i-600dpi.jpg', filename, k)), '-jpg', '-r600', '-q100');
+savefigure(F, fullfile(renderPath, 'motion2', sprintf('motion2-%s-%i-1200dpi.jpg', filename, k)), '-jpg', '-r1200', '-q100');
+
+%close all;
 end
 
 % Close file.
