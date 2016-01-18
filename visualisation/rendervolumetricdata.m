@@ -28,7 +28,7 @@ path = fullfile('./', 'data', name);
 
 % Import data.
 disp('Loading image data.');
-filename = 'frames-140-142-unfiltered';
+filename = 'frames-140-141-unfiltered';
 load(fullfile(path, sprintf('%s.mat', filename)));
 
 % Load colormap for proper visualisation.
