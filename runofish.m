@@ -105,7 +105,7 @@ for k=[2, 1]
     [Vs, rho] = surfsynth(Ns, V, c);
 
     % Prepare data.
-    u = flipdim(U{k}.u, 3);
+    u = flip(U{k}.u, 3);
 
     % Project data.
     [um, un, uo] = size(u);
