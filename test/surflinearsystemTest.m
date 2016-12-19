@@ -14,11 +14,19 @@
 %
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
-function test_suite = surflinearsystemTest
-    initTestSuite;
+function tests = surflinearsystemTest
+    tests = functiontests(localfunctions);
 end
 
-function resultTest
+function setupOnce(testCase)
+    cd('../');
+end
+
+function teardownOnce(testCase)
+    cd('test');
+end
+
+function resultTest(testCase)
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
@@ -43,22 +51,22 @@ deg = 7;
 [dim, A, D, b] = surflinearsystem(F, V, Ns, c, 1:N, f1, f2, h, deg, tol);
 
 % Check results.
-assertEqual(dim, 2*(N^2 + 2*N));
-assertFalse(isempty(A));
-assertEqual(size(A), [2*(N^2 + 2*N), 2*(N^2 + 2*N)]);
-assertFalse(isempty(D));
-assertEqual(size(D), [2*(N^2 + 2*N), 2*(N^2 + 2*N)]);
-assertFalse(isempty(b));
-assertTrue(isvector(b));
-assertEqual(size(b), [2*(N^2 + 2*N), 1]);
+verifyEqual(testCase, dim, 2*(N^2 + 2*N));
+verifyFalse(testCase, isempty(A));
+verifyEqual(testCase, size(A), [2*(N^2 + 2*N), 2*(N^2 + 2*N)]);
+verifyFalse(testCase, isempty(D));
+verifyEqual(testCase, size(D), [2*(N^2 + 2*N), 2*(N^2 + 2*N)]);
+verifyFalse(testCase, isempty(b));
+verifyTrue(testCase, isvector(b));
+verifyEqual(testCase, size(b), [2*(N^2 + 2*N), 1]);
 
 % Check if matrices are symmetric.
-assertAlmostEqual(A, A');
-assertAlmostEqual(D, D');
+verifyEqual(testCase, A, A');
+verifyEqual(testCase, D, D');
 
 end
 
-function intervalTest
+function intervalTest(testCase)
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
@@ -84,22 +92,22 @@ deg = 1;
 
 % Check results.
 expDim = 2*(N(end)^2 + 2*N(end) - N(1)^2 + 1);
-assertEqual(dim, expDim);
-assertFalse(isempty(A));
-assertEqual(size(A), [expDim, expDim]);
-assertFalse(isempty(D));
-assertEqual(size(D), [expDim, expDim]);
-assertFalse(isempty(b));
-assertTrue(isvector(b));
-assertEqual(size(b), [expDim, 1]);
+verifyEqual(testCase, dim, expDim);
+verifyFalse(testCase, isempty(A));
+verifyEqual(testCase, size(A), [expDim, expDim]);
+verifyFalse(testCase, isempty(D));
+verifyEqual(testCase, size(D), [expDim, expDim]);
+verifyFalse(testCase, isempty(b));
+verifyTrue(testCase, isvector(b));
+verifyEqual(testCase, size(b), [expDim, 1]);
 
 % Check if matrices are symmetric.
-assertAlmostEqual(A, A');
-assertAlmostEqual(D, D');
+verifyEqual(testCase, A, A');
+verifyEqual(testCase, D, D');
 
 end
 
-function memTest
+function memTest(testCase)
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
@@ -126,22 +134,22 @@ deg = 1;
 
 % Check results.
 expDim = 2*(N(end)^2 + 2*N(end) - N(1)^2 + 1);
-assertEqual(dim, expDim);
-assertFalse(isempty(A));
-assertEqual(size(A), [expDim, expDim]);
-assertFalse(isempty(D));
-assertEqual(size(D), [expDim, expDim]);
-assertFalse(isempty(b));
-assertTrue(isvector(b));
-assertEqual(size(b), [expDim, 1]);
+verifyEqual(testCase, dim, expDim);
+verifyFalse(testCase, isempty(A));
+verifyEqual(testCase, size(A), [expDim, expDim]);
+verifyFalse(testCase, isempty(D));
+verifyEqual(testCase, size(D), [expDim, expDim]);
+verifyFalse(testCase, isempty(b));
+verifyTrue(testCase, isvector(b));
+verifyEqual(testCase, size(b), [expDim, 1]);
 
 % Check if matrices are symmetric.
-assertAlmostEqual(A, A');
-assertAlmostEqual(D, D');
+verifyEqual(testCase, A, A');
+verifyEqual(testCase, D, D');
 
 end
 
-function noDataTest
+function noDataTest(testCase)
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
@@ -166,22 +174,22 @@ deg = 1;
 [dim, A, D, b] = surflinearsystem(F, V, Ns, c, 1:N, f1, f2, h, deg, tol);
 
 % Check results.
-assertEqual(dim, 2*(N^2 + 2*N));
-assertFalse(isempty(A));
-assertEqual(size(A), [2*(N^2 + 2*N), 2*(N^2 + 2*N)]);
-assertFalse(isempty(D));
-assertEqual(size(D), [2*(N^2 + 2*N), 2*(N^2 + 2*N)]);
-assertFalse(isempty(b));
-assertTrue(isvector(b));
-assertEqual(size(b), [2*(N^2 + 2*N), 1]);
+verifyEqual(testCase, dim, 2*(N^2 + 2*N));
+verifyFalse(testCase, isempty(A));
+verifyEqual(testCase, size(A), [2*(N^2 + 2*N), 2*(N^2 + 2*N)]);
+verifyFalse(testCase, isempty(D));
+verifyEqual(testCase, size(D), [2*(N^2 + 2*N), 2*(N^2 + 2*N)]);
+verifyFalse(testCase, isempty(b));
+verifyTrue(testCase, isvector(b));
+verifyEqual(testCase, size(b), [2*(N^2 + 2*N), 1]);
 
 % Check if matrices are symmetric.
-assertAlmostEqual(A, A');
-assertAlmostEqual(D, D');
+verifyEqual(testCase, A, A');
+verifyEqual(testCase, D, D');
 
 end
 
-function partiallyNoDataTest
+function partiallyNoDataTest(testCase)
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
@@ -206,17 +214,17 @@ deg = 1;
 [dim, A, D, b] = surflinearsystem(F, V, Ns, c, 1:N, f1, f2, h, deg, tol);
 
 % Check results.
-assertEqual(dim, 2*(N^2 + 2*N));
-assertFalse(isempty(A));
-assertEqual(size(A), [2*(N^2 + 2*N), 2*(N^2 + 2*N)]);
-assertFalse(isempty(D));
-assertEqual(size(D), [2*(N^2 + 2*N), 2*(N^2 + 2*N)]);
-assertFalse(isempty(b));
-assertTrue(isvector(b));
-assertEqual(size(b), [2*(N^2 + 2*N), 1]);
+verifyEqual(testCase, dim, 2*(N^2 + 2*N));
+verifyFalse(testCase, isempty(A));
+verifyEqual(testCase, size(A), [2*(N^2 + 2*N), 2*(N^2 + 2*N)]);
+verifyFalse(testCase, isempty(D));
+verifyEqual(testCase, size(D), [2*(N^2 + 2*N), 2*(N^2 + 2*N)]);
+verifyFalse(testCase, isempty(b));
+verifyTrue(testCase, isvector(b));
+verifyEqual(testCase, size(b), [2*(N^2 + 2*N), 1]);
 
 % Check if matrices are symmetric.
-assertAlmostEqual(A, A');
-assertAlmostEqual(D, D');
+verifyEqual(testCase, A, A');
+verifyEqual(testCase, D, D');
 
 end

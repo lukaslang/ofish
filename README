@@ -58,7 +58,7 @@ statement can be found in the respective files.
 3. Requirements
 
 This software was originally written for and tested with Matlab R2012b.
-It has been recently modified to also run with R2015a.
+It has been recently modified to run with R2015a.
 
 Note that this software uses the TriRep class which since R2013a is marked 
 as 'will be removed in a future release'. It also used flipdim, which will 
@@ -67,9 +67,6 @@ be removed at some point in the future.
 See http://www.mathworks.de/de/help/matlab/release-notes.html
 
 The following libraries are required for parts of this sofware:
-
-xUnit: used for testing.
-URL: http://www.mathworks.com/matlabcentral/fileexchange/22846-matlab-xunit-test-framework 
 
 export_fig: used for producing high quality figures from the results.
 URL: http://www.mathworks.com/matlabcentral/fileexchange/23629-exportfig
@@ -86,13 +83,7 @@ library paths properly. Then simply run the startup script.
 
 To run the test cases execute
 
->> runtests test
-
-or
-
->> runtests test -verbose
-
-to get more information (see xUnit for more information).
+>> runtests('./test')
 
 The following run scripts are included:
 

@@ -14,11 +14,19 @@
 %
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
-function test_suite = metricpropsTest
-    initTestSuite;
+function tests = metricpropsTest
+    tests = functiontests(localfunctions);
 end
 
-function triangulationTest
+function setupOnce(testCase)
+    cd('../');
+end
+
+function teardownOnce(testCase)
+    cd('test');
+end
+
+function triangulationTest(testCase)
 
 % Generate icosahedron.
 [F, V] = sphTriang;
@@ -26,19 +34,19 @@ m = size(F, 1);
 
 % Compute tangent basis.
 [Dx, Dy] = tritanBasis(F, V);
-assertFalse(isempty(Dx));
-assertFalse(isempty(Dy));
+verifyFalse(testCase, isempty(Dx));
+verifyFalse(testCase, isempty(Dy));
 
 % Compute triangulated surface properties.
 [g, detg, ginv] = metricprops(Dx, Dy);
-assertFalse(isempty(g));
-assertFalse(isempty(detg));
-assertFalse(isempty(ginv));
-assertEqual(size(g), [m, 2, 2]);
-assertEqual(size(detg), [m, 1]);
-assertEqual(size(ginv), [m, 2, 2]);
+verifyFalse(testCase, isempty(g));
+verifyFalse(testCase, isempty(detg));
+verifyFalse(testCase, isempty(ginv));
+verifyEqual(testCase, size(g), [m, 2, 2]);
+verifyEqual(testCase, size(detg), [m, 1]);
+verifyEqual(testCase, size(ginv), [m, 2, 2]);
 
 % Check if determinant is correct.
-assertAlmostEqual(detg, 4 * triangArea(F, V) .^ 2);
+verifyEqual(testCase, detg, 4 * triangArea(F, V) .^ 2, 'AbsTol', 1e-15);
 
 end

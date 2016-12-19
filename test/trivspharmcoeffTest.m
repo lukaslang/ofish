@@ -14,11 +14,19 @@
 %
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
-function test_suite = trivspharmcoeffTest
-    initTestSuite;
+function tests = trivspharmcoeffTest
+    tests = functiontests(localfunctions);
 end
 
-function resultTest
+function setupOnce(testCase)
+    cd('../');
+end
+
+function teardownOnce(testCase)
+    cd('test');
+end
+
+function resultTest(testCase)
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
@@ -30,14 +38,14 @@ xi = repmat([1/3, 1/3], m, 1);
 % Create spherical harmonics.
 N = 5;
 [Y1, Y2] = trivspharmcoeff(N, F, V, xi);
-assertFalse(isempty(Y1));
-assertEqual(size(Y1), [m, 2*N + 1, 2]);
-assertFalse(isempty(Y2));
-assertEqual(size(Y2), [m, 2*N + 1, 2]);
+verifyFalse(testCase, isempty(Y1));
+verifyEqual(testCase, size(Y1), [m, 2*N + 1, 2]);
+verifyFalse(testCase, isempty(Y2));
+verifyEqual(testCase, size(Y2), [m, 2*N + 1, 2]);
 
 end
 
-function quadratureDimensionTest
+function quadratureDimensionTest(testCase)
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
@@ -50,14 +58,14 @@ xi = repmat([1/3, 1/3], [m, 1, nq]);
 % Create spherical harmonics.
 N = 5;
 [Y1, Y2] = trivspharmcoeff(N, F, V, xi);
-assertFalse(isempty(Y1));
-assertEqual(size(Y1), [m, 2*N + 1, 2, nq]);
-assertFalse(isempty(Y2));
-assertEqual(size(Y2), [m, 2*N + 1, 2, nq]);
+verifyFalse(testCase, isempty(Y1));
+verifyEqual(testCase, size(Y1), [m, 2*N + 1, 2, nq]);
+verifyFalse(testCase, isempty(Y2));
+verifyEqual(testCase, size(Y2), [m, 2*N + 1, 2, nq]);
 
 end
 
-function orthogonalityTest
+function orthogonalityTest(testCase)
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
@@ -81,11 +89,11 @@ end
 
 % Compute R3 inner product.
 ip = dot(Y1, Y2, 3);
-assertAlmostEqual(ip, zeros(m, 2*N + 1));
+verifyEqual(testCase, ip, zeros(m, 2*N + 1), 'AbsTol', 1e-15);
 
 end
 
-function visualiseTest
+function visualiseTest(testCase)
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
@@ -98,10 +106,10 @@ x = trimap(F, V, xi);
 % Create spherical harmonics.
 N = 3;
 [Y1c, Y2c] = trivspharmcoeff(N, F, V, xi);
-assertFalse(isempty(Y1c));
-assertEqual(size(Y1c), [m, 2*N + 1, 2]);
-assertFalse(isempty(Y2c));
-assertEqual(size(Y2c), [m, 2*N + 1, 2]);
+verifyFalse(testCase, isempty(Y1c));
+verifyEqual(testCase, size(Y1c), [m, 2*N + 1, 2]);
+verifyFalse(testCase, isempty(Y2c));
+verifyEqual(testCase, size(Y2c), [m, 2*N + 1, 2]);
 
 % Compute tangent basis.
 [Dx, Dy] = tritanBasis(F, V);

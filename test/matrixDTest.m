@@ -14,11 +14,19 @@
 %
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
-function test_suite = matrixDTest
-    initTestSuite;
+function tests = matrixDTest
+    tests = functiontests(localfunctions);
 end
 
-function resultTest
+function setupOnce(testCase)
+    cd('../');
+end
+
+function teardownOnce(testCase)
+    cd('test');
+end
+
+function resultTest(testCase)
 
 % Generate icosahedron.
 [F, V] = sphTriang(3);
@@ -53,17 +61,17 @@ dim = size(Y, 2);
 
 % Compute covariant derivative.
 [Z11, Z12, Z21, Z22] = surfcovderiv(G, g, A, Y, DY, xi);
-assertEqual(size(Z11), [m, dim, nq]);
-assertEqual(size(Z12), [m, dim, nq]);
-assertEqual(size(Z21), [m, dim, nq]);
-assertEqual(size(Z22), [m, dim, nq]);
+verifyEqual(testCase, size(Z11), [m, dim, nq]);
+verifyEqual(testCase, size(Z12), [m, dim, nq]);
+verifyEqual(testCase, size(Z21), [m, dim, nq]);
+verifyEqual(testCase, size(Z22), [m, dim, nq]);
 
 detphi = ones(m, nq);
 w = ones(nq, 1);
 a = triangArea(F, V);
 
 D = matrixD(dim, Z11, Z12, Z21, Z22, detphi, w, a);
-assertEqual(size(D), [dim, dim]);
-assertAlmostEqual(D, D');
+verifyEqual(testCase, size(D), [dim, dim]);
+verifyEqual(testCase, D, D');
 
 end

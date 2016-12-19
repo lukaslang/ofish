@@ -14,11 +14,19 @@
 %
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
-function test_suite = surftanBasisTest
-    initTestSuite;
+function tests = surftanBasisTest
+    tests = functiontests(localfunctions);
 end
 
-function resultTest
+function setupOnce(testCase)
+    cd('../');
+end
+
+function teardownOnce(testCase)
+    cd('test');
+end
+
+function resultTest(testCase)
 
 % Generate icosahedron.
 [F, V] = sphTriang;
@@ -36,14 +44,14 @@ xi = repmat([0, 0], size(F, 1), 1);
 
 % Compute triangulated surface properties.
 [Dx, Dy] = surftanBasis(F, V, rho, xi);
-assertFalse(isempty(Dx));
-assertFalse(isempty(Dy));
-assertEqual(size(Dx), [m, 3]);
-assertEqual(size(Dy), [m, 3]);
+verifyFalse(testCase, isempty(Dx));
+verifyFalse(testCase, isempty(Dy));
+verifyEqual(testCase, size(Dx), [m, 3]);
+verifyEqual(testCase, size(Dy), [m, 3]);
 
 end
 
-function visualiseTest
+function visualiseTest(testCase)
 
 % Generate triangle.
 F = [1, 2, 3];

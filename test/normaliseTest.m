@@ -14,30 +14,38 @@
 %
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
-function test_suite = normaliseTest
-    initTestSuite;
+function tests = normaliseTest
+    tests = functiontests(localfunctions);
 end
 
-function resultTest
+function setupOnce(testCase)
+    cd('../');
+end
+
+function teardownOnce(testCase)
+    cd('test');
+end
+
+function resultTest(testCase)
 
 % Generate icosahedron.
 [~, V] = sphTriang;
 
 Vn = normalise(V);
-assertAlmostEqual(Vn, V);
+verifyEqual(testCase, Vn, V);
 
 Vn = normalise(bsxfun(@times, V, rand(size(V, 1), 1)));
-assertAlmostEqual(Vn, V);
+verifyEqual(testCase, Vn, V, 'AbsTol', 1e-15);
 
 end
 
-function quadratureDimensionTest
+function quadratureDimensionTest(testCase)
 
 % Generate icosahedron.
 [~, V] = sphTriang;
 
 nq = 5;
 Vn = normalise(repmat(V, [1, 1, nq]));
-assertAlmostEqual(Vn, repmat(V, [1, 1, nq]));
+verifyEqual(testCase, Vn, repmat(V, [1, 1, nq]));
 
 end

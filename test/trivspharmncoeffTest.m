@@ -14,11 +14,19 @@
 %
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
-function test_suite = trivspharmncoeffTest
-    initTestSuite;
+function tests = trivspharmncoeffTest
+    tests = functiontests(localfunctions);
 end
 
-function resultTest
+function setupOnce(testCase)
+    cd('../');
+end
+
+function teardownOnce(testCase)
+    cd('test');
+end
+
+function resultTest(testCase)
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
@@ -33,12 +41,12 @@ dim = 2*(N(end)^2 + 2*N(end) - N(1)^2 + 1);
 
 % Compute coefficients.
 [Y, DY] = trivspharmncoeff(N, F, V, xi);
-assertEqual(size(Y), [m, dim, 2, nq]);
-assertEqual(size(DY), [m, 2, dim, 2, nq]);
+verifyEqual(testCase, size(Y), [m, dim, 2, nq]);
+verifyEqual(testCase, size(DY), [m, 2, dim, 2, nq]);
 
 end
 
-function orthogonalityTest
+function orthogonalityTest(testCase)
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
@@ -67,11 +75,11 @@ Y2 = Y(:, dim/2+1:end, :);
 
 % Compute R3 inner product.
 ip = dot(Y1, Y2, 3);
-assertAlmostEqual(ip, zeros(m, 2*N + 1));
+verifyEqual(testCase, ip, zeros(m, 2*N + 1), 'AbsTol', 1e-15);
 
 end
 
-function visualiseCoefficientsTest
+function visualiseCoefficientsTest(testCase)
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
@@ -118,7 +126,7 @@ for k=1:2*N+1
 end
 end
 
-function visualiseDerivativesTest
+function visualiseDerivativesTest(testCase)
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(5);

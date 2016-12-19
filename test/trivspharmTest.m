@@ -14,11 +14,19 @@
 %
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
-function test_suite = trivspharmTest
-    initTestSuite;
+function tests = trivspharmTest
+    tests = functiontests(localfunctions);
 end
 
-function resultTest
+function setupOnce(testCase)
+    cd('../');
+end
+
+function teardownOnce(testCase)
+    cd('test');
+end
+
+function resultTest(testCase)
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
@@ -30,10 +38,10 @@ xi = repmat([1/3, 1/3], n, 1);
 % Create spherical harmonics.
 N = 5;
 [Y1, Y2] = trivspharm(N, F, V, xi);
-assertFalse(isempty(Y1));
-assertEqual(size(Y1), [n, 2*N + 1, 3]);
-assertFalse(isempty(Y2));
-assertEqual(size(Y2), [n, 2*N + 1, 3]);
+verifyFalse(testCase, isempty(Y1));
+verifyEqual(testCase, size(Y1), [n, 2*N + 1, 3]);
+verifyFalse(testCase, isempty(Y2));
+verifyEqual(testCase, size(Y2), [n, 2*N + 1, 3]);
 
 % Pick coordinates.
 nq = 3;
@@ -42,14 +50,14 @@ xi = repmat([1/3, 1/3], [n, 1, nq]);
 % Create spherical harmonics.
 N = 5;
 [Y1, Y2] = trivspharm(N, F, V, xi);
-assertFalse(isempty(Y1));
-assertEqual(size(Y1), [n, 2*N + 1, 3, nq]);
-assertFalse(isempty(Y2));
-assertEqual(size(Y2), [n, 2*N + 1, 3, nq]);
+verifyFalse(testCase, isempty(Y1));
+verifyEqual(testCase, size(Y1), [n, 2*N + 1, 3, nq]);
+verifyFalse(testCase, isempty(Y2));
+verifyEqual(testCase, size(Y2), [n, 2*N + 1, 3, nq]);
 
 end
 
-function orthogonalityTest
+function orthogonalityTest(testCase)
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
@@ -64,11 +72,11 @@ N = 5;
 
 % Compute R3 inner product.
 ip = dot(Y1, Y2, 3);
-assertAlmostEqual(ip, zeros(n, 2*N + 1));
+verifyEqual(testCase, ip, zeros(n, 2*N + 1), 'AbsTol', 1e-15);
 
 end
 
-function visualiseTest
+function visualiseTest(testCase)
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
@@ -81,10 +89,10 @@ x = trimap(F, V, xi);
 % Create spherical harmonics.
 N = 3;
 [Y1, Y2] = trivspharm(N, F, V, xi);
-assertFalse(isempty(Y1));
-assertEqual(size(Y1), [n, 2*N + 1, 3]);
-assertFalse(isempty(Y2));
-assertEqual(size(Y2), [n, 2*N + 1, 3]);
+verifyFalse(testCase, isempty(Y1));
+verifyEqual(testCase, size(Y1), [n, 2*N + 1, 3]);
+verifyFalse(testCase, isempty(Y2));
+verifyEqual(testCase, size(Y2), [n, 2*N + 1, 3]);
 
 % Create spherical harmonics for visualisation.
 Ynj = spharm(N, V);

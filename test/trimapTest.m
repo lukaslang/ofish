@@ -14,34 +14,42 @@
 %
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
-function test_suite = trimapTest
-    initTestSuite;
+function tests = trimapTest
+    tests = functiontests(localfunctions);
 end
 
-function resultTest
+function setupOnce(testCase)
+    cd('../');
+end
+
+function teardownOnce(testCase)
+    cd('test');
+end
+
+function resultTest(testCase)
 
 % Generate icosahedron.
 [F, V] = sphTriang;
 m = size(F, 1);
 
 x = trimap(F, V, zeros(m, 2));
-assertFalse(isempty(x));
-assertEqual(size(x), [m, 3]);
-assertAlmostEqual(x, V(F(:, 1), :));
+verifyFalse(testCase, isempty(x));
+verifyEqual(testCase, size(x), [m, 3]);
+verifyEqual(testCase, x, V(F(:, 1), :));
 
 x = trimap(F, V, [ones(m, 1), zeros(m, 1)]);
-assertFalse(isempty(x));
-assertEqual(size(x), [m, 3]);
-assertAlmostEqual(x, V(F(:, 3), :));
+verifyFalse(testCase, isempty(x));
+verifyEqual(testCase, size(x), [m, 3]);
+verifyEqual(testCase, x, V(F(:, 3), :));
 
 x = trimap(F, V, [zeros(m, 1), ones(m, 1)]);
-assertFalse(isempty(x));
-assertEqual(size(x), [m, 3]);
-assertAlmostEqual(x, V(F(:, 2), :));
+verifyFalse(testCase, isempty(x));
+verifyEqual(testCase, size(x), [m, 3]);
+verifyEqual(testCase, x, V(F(:, 2), :));
 
 end
 
-function quadratureDimTest
+function quadratureDimTest(testCase)
 
 % Generate icosahedron.
 [F, V] = sphTriang;
@@ -51,10 +59,10 @@ xi(:, :, 1) = zeros(m, 2);
 xi(:, :, 2) = [ones(m, 1), zeros(m, 1)];
 xi(:, :, 3) = [zeros(m, 1), ones(m, 1)];
 x = trimap(F, V, xi);
-assertFalse(isempty(x));
-assertEqual(size(x), [m, 3, 3]);
-assertAlmostEqual(x(:, :, 1), V(F(:, 1), :));
-assertAlmostEqual(x(:, :, 2), V(F(:, 3), :));
-assertAlmostEqual(x(:, :, 3), V(F(:, 2), :));
+verifyFalse(testCase, isempty(x));
+verifyEqual(testCase, size(x), [m, 3, 3]);
+verifyEqual(testCase, x(:, :, 1), V(F(:, 1), :));
+verifyEqual(testCase, x(:, :, 2), V(F(:, 3), :));
+verifyEqual(testCase, x(:, :, 3), V(F(:, 2), :));
 
 end

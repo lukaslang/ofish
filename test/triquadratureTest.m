@@ -14,31 +14,39 @@
 %
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
-function test_suite = triquadratureTest
-    initTestSuite;
+function tests = triquadratureTest
+    tests = functiontests(localfunctions);
 end
 
-function resultTest
+function setupOnce(testCase)
+    cd('../');
+end
+
+function teardownOnce(testCase)
+    cd('test');
+end
+
+function resultTest(testCase)
 
 % Get quadrature points.
 [xi, w] = triquadrature(1);
-assertFalse(isempty(xi));
-assertFalse(isempty(w));
-assertEqual(size(xi), [1, 2]);
-assertEqual(size(w), [1, 1]);
+verifyFalse(testCase, isempty(xi));
+verifyFalse(testCase, isempty(w));
+verifyEqual(testCase, size(xi), [1, 2]);
+verifyEqual(testCase, size(w), [1, 1]);
 
 % Get quadrature points.
 [xi, w] = triquadrature(7);
-assertFalse(isempty(xi));
-assertFalse(isempty(w));
-assertEqual(size(xi), [16, 2]);
-assertEqual(size(w), [16, 1]);
+verifyFalse(testCase, isempty(xi));
+verifyFalse(testCase, isempty(w));
+verifyEqual(testCase, size(xi), [16, 2]);
+verifyEqual(testCase, size(w), [16, 1]);
 
 % Get quadrature points.
 [xi, w] = triquadrature(15);
-assertFalse(isempty(xi));
-assertFalse(isempty(w));
-assertEqual(size(xi), [64, 2]);
-assertEqual(size(w), [64, 1]);
+verifyFalse(testCase, isempty(xi));
+verifyFalse(testCase, isempty(w));
+verifyEqual(testCase, size(xi), [64, 2]);
+verifyEqual(testCase, size(w), [64, 1]);
 
 end

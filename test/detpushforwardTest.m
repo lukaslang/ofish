@@ -14,11 +14,19 @@
 %
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
-function test_suite = detpushforwardTest
-    initTestSuite;
+function tests = detpushforwardTest
+    tests = functiontests(localfunctions);
 end
 
-function resultTest
+function setupOnce(testCase)
+    cd('../');
+end
+
+function teardownOnce(testCase)
+    cd('test');
+end
+
+function resultTest(testCase)
 
 % Generate icosahedron.
 [F, V] = sphTriang;
@@ -29,13 +37,13 @@ xi = repmat([1/3, 1/3], m ,1);
 % Check with constant function rho.
 rho = ones(m, 6);
 detphi = detpushforward(F, V, rho, xi);
-assertFalse(isempty(detphi));
-assertEqual(size(detphi), [m, 1]);
-assertAlmostEqual(detphi, ones(m, 1));
+verifyFalse(testCase, isempty(detphi));
+verifyEqual(testCase, size(detphi), [m, 1]);
+verifyEqual(testCase, detphi, ones(m, 1), 'AbsTol', 1e-15);
 
 end
 
-function quadratureDimTest
+function quadratureDimTest(testCase)
 
 % Generate icosahedron.
 [F, V] = sphTriang;
@@ -47,8 +55,8 @@ xi = repmat([1/3, 1/3], [m, 1, nq]);
 % Check with constant function rho.
 rho = ones(m, 6);
 detphi = detpushforward(F, V, rho, xi);
-assertFalse(isempty(detphi));
-assertEqual(size(detphi), [m, nq]);
-assertAlmostEqual(detphi, ones(m, nq));
+verifyFalse(testCase, all(isempty(detphi)));
+verifyEqual(testCase, size(detphi), [m, nq]);
+verifyEqual(testCase, detphi, ones(m, nq), 'AbsTol', 1e-15);
 
 end

@@ -14,11 +14,19 @@
 %
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
-function test_suite = trivspharmsynthTest
-    initTestSuite;
+function tests = trivspharmsynthTest
+    tests = functiontests(localfunctions);
 end
 
-function resultTest
+function setupOnce(testCase)
+    cd('../');
+end
+
+function teardownOnce(testCase)
+    cd('test');
+end
+
+function resultTest(testCase)
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
@@ -34,16 +42,16 @@ u = zeros(2*(N^2 + 2*N), 1);
 [Yx, Yy] = trivspharmsynth(1:N, F, V, u, xi);
 
 % Check results.
-assertFalse(isempty(Yx));
-assertFalse(isempty(Yy));
-assertEqual(size(Yx), [m, 1]);
-assertEqual(size(Yy), [m, 1]);
-assertEqual(Yx, zeros(m, 1));
-assertEqual(Yy, zeros(m, 1));
+verifyFalse(testCase, isempty(Yx));
+verifyFalse(testCase, isempty(Yy));
+verifyEqual(testCase, size(Yx), [m, 1]);
+verifyEqual(testCase, size(Yy), [m, 1]);
+verifyEqual(testCase, Yx, zeros(m, 1));
+verifyEqual(testCase, Yy, zeros(m, 1));
 
 end
 
-function intervalTest
+function intervalTest(testCase)
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
@@ -59,12 +67,12 @@ u = zeros(2*(N(end)^2 + 2*N(end) - N(1)^2 + 1), 1);
 [Yx, Yy] = trivspharmsynth(N, F, V, u, xi);
 
 % Check results.
-assertFalse(isempty(Yx));
-assertFalse(isempty(Yy));
-assertEqual(size(Yx), [m, 1]);
-assertEqual(size(Yy), [m, 1]);
-assertEqual(Yx, zeros(m, 1));
-assertEqual(Yy, zeros(m, 1));
+verifyFalse(testCase, isempty(Yx));
+verifyFalse(testCase, isempty(Yy));
+verifyEqual(testCase, size(Yx), [m, 1]);
+verifyEqual(testCase, size(Yy), [m, 1]);
+verifyEqual(testCase, Yx, zeros(m, 1));
+verifyEqual(testCase, Yy, zeros(m, 1));
 
 N = 1:10;
 % Create coefficients.
@@ -73,16 +81,16 @@ u = zeros(2*(N(end)^2 + 2*N(end) - N(1)^2 + 1), 1);
 [Yx, Yy] = trivspharmsynth(N, F, V, u, xi);
 
 % Check results.
-assertFalse(isempty(Yx));
-assertFalse(isempty(Yy));
-assertEqual(size(Yx), [m, 1]);
-assertEqual(size(Yy), [m, 1]);
-assertEqual(Yx, zeros(m, 1));
-assertEqual(Yy, zeros(m, 1));
+verifyFalse(testCase, isempty(Yx));
+verifyFalse(testCase, isempty(Yy));
+verifyEqual(testCase, size(Yx), [m, 1]);
+verifyEqual(testCase, size(Yy), [m, 1]);
+verifyEqual(testCase, Yx, zeros(m, 1));
+verifyEqual(testCase, Yy, zeros(m, 1));
 
 end
 
-function memConstraintTest
+function memConstraintTest(testCase)
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
@@ -99,16 +107,16 @@ mem = 2e6;
 [Yx, Yy] = trivspharmsynth(1:N, F, V, u, xi, mem);
 
 % Check results.
-assertFalse(isempty(Yx));
-assertFalse(isempty(Yy));
-assertEqual(size(Yx), [m, 1]);
-assertEqual(size(Yy), [m, 1]);
-assertEqual(Yx, zeros(m, 1));
-assertEqual(Yy, zeros(m, 1));
+verifyFalse(testCase, isempty(Yx));
+verifyFalse(testCase, isempty(Yy));
+verifyEqual(testCase, size(Yx), [m, 1]);
+verifyEqual(testCase, size(Yy), [m, 1]);
+verifyEqual(testCase, Yx, zeros(m, 1));
+verifyEqual(testCase, Yy, zeros(m, 1));
 
 end
 
-function compareCoefficientsTest
+function compareCoefficientsTest(testCase)
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
@@ -127,10 +135,10 @@ u = ones(dim, 1);
 
 % Compute coefficients.
 Y = trivspharmncoeff(1:N, F, V, xi);
-assertEqual(size(Y), [m, dim, 2]);
+verifyEqual(testCase, size(Y), [m, dim, 2]);
 
 % Check for equality of synthesis.
-assertAlmostEqual(Yx, sum(Y(:, :, 1), 2));
-assertAlmostEqual(Yy, sum(Y(:, :, 2), 2));
+verifyEqual(testCase, Yx, sum(Y(:, :, 1), 2), 'AbsTol', 1e-13);
+verifyEqual(testCase, Yy, sum(Y(:, :, 2), 2), 'AbsTol', 1e-13);
 
 end

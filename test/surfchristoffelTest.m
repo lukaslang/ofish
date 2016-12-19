@@ -14,11 +14,19 @@
 %
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
-function test_suite = surfchristoffelTest
-    initTestSuite;
+function tests = surfchristoffelTest
+    tests = functiontests(localfunctions);
 end
 
-function resultTest
+function setupOnce(testCase)
+    cd('../');
+end
+
+function teardownOnce(testCase)
+    cd('test');
+end
+
+function resultTest(testCase)
 
 % Generate icosahedron.
 [F, V] = sphTriang;
@@ -33,8 +41,8 @@ xi = repmat([1/3, 1/3], [m, 1, nq]);
 
 % Compute Christoffel symbols.
 G = surfchristoffel(F, V, rho, xi);
-assertFalse(isempty(G));
-assertEqual(size(G), [m, 2, 2, 2, nq]);
-assertAlmostEqual(G, zeros(m, 2, 2, 2, nq));
+verifyFalse(testCase, isempty(G));
+verifyEqual(testCase, size(G), [m, 2, 2, 2, nq]);
+verifyEqual(testCase, G, zeros(m, 2, 2, 2, nq), 'AbsTol', 1e-15);
 
 end

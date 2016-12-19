@@ -14,11 +14,19 @@
 %
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
-function test_suite = surfcovderivTest
-    initTestSuite;
+function tests = surfcovderivnTest
+    tests = functiontests(localfunctions);
 end
 
-function resultTest
+function setupOnce(testCase)
+    cd('../');
+end
+
+function teardownOnce(testCase)
+    cd('test');
+end
+
+function resultTest(testCase)
 
 % Generate icosahedron.
 [F, V] = sphTriang(3);
@@ -53,21 +61,21 @@ dim = size(Y, 2);
 
 % Compute covariant derivative.
 [Z11, Z12, Z21, Z22] = surfcovderivn(N, G, g, A, F, V, xi);
-assertEqual(size(Z11), [m, dim, nq]);
-assertEqual(size(Z12), [m, dim, nq]);
-assertEqual(size(Z21), [m, dim, nq]);
-assertEqual(size(Z22), [m, dim, nq]);
+verifyEqual(testCase, size(Z11), [m, dim, nq]);
+verifyEqual(testCase, size(Z12), [m, dim, nq]);
+verifyEqual(testCase, size(Z21), [m, dim, nq]);
+verifyEqual(testCase, size(Z22), [m, dim, nq]);
 
 % Compare to covariant derivative.
 [Z11o, Z12o, Z21o, Z22o] = surfcovderiv(G, g, A, Y, DY, xi);
-assertAlmostEqual(Z11, Z11o);
-assertAlmostEqual(Z12, Z12o);
-assertAlmostEqual(Z21, Z21o);
-assertAlmostEqual(Z22, Z22o);
+verifyEqual(testCase, Z11, Z11o);
+verifyEqual(testCase, Z12, Z12o);
+verifyEqual(testCase, Z21, Z21o);
+verifyEqual(testCase, Z22, Z22o);
 
 end
 
-function memTest
+function memTest(testCase)
 
 % Generate icosahedron.
 [F, V] = sphTriang(3);
@@ -101,9 +109,9 @@ dim = 2*(N(end)^2 + 2*N(end) - N(1)^2 + 1);
 
 % Compute covariant derivative.
 [Z11, Z12, Z21, Z22] = surfcovderivn(N, G, g, A, F, V, xi, mem);
-assertEqual(size(Z11), [m, dim, nq]);
-assertEqual(size(Z12), [m, dim, nq]);
-assertEqual(size(Z21), [m, dim, nq]);
-assertEqual(size(Z22), [m, dim, nq]);
+verifyEqual(testCase, size(Z11), [m, dim, nq]);
+verifyEqual(testCase, size(Z12), [m, dim, nq]);
+verifyEqual(testCase, size(Z21), [m, dim, nq]);
+verifyEqual(testCase, size(Z22), [m, dim, nq]);
 
 end

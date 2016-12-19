@@ -14,11 +14,19 @@
 %
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
-function test_suite = trinodalpts2Test
-    initTestSuite;
+function tests = trinodalpts2Test
+    tests = functiontests(localfunctions);
 end
 
-function resultTest
+function setupOnce(testCase)
+    cd('../');
+end
+
+function teardownOnce(testCase)
+    cd('test');
+end
+
+function resultTest(testCase)
 
 % Generate icosahedron.
 [F, V] = sphTriang;
@@ -26,7 +34,7 @@ m = size(F, 1);
 
 % Compute nodal points.
 Vq = trinodalpts2(F, V);
-assertFalse(isempty(Vq));
-assertEqual(size(Vq), [m, 3, 6]);
+verifyFalse(testCase, isempty(Vq));
+verifyEqual(testCase, size(Vq), [m, 3, 6]);
 
 end

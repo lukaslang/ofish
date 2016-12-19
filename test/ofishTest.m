@@ -14,11 +14,19 @@
 %
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
-function test_suite = ofishTest
-    initTestSuite;
+function tests = ofishTest
+    tests = functiontests(localfunctions);
 end
 
-function identityMapTest
+function setupOnce(testCase)
+    cd('../');
+end
+
+function teardownOnce(testCase)
+    cd('test');
+end
+
+function identityMapTest(testCase)
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
@@ -40,13 +48,13 @@ deg = 1;
 
 u = ofish(N, Ns, c, F, V, f1, f2, h, deg, alpha);
 
-assertFalse(isempty(u));
-assertEqual(size(u), [m, 3]);
-assertEqual(u, zeros(m, 3));
+verifyFalse(testCase, isempty(u));
+verifyEqual(testCase, size(u), [m, 3]);
+verifyEqual(testCase, u, zeros(m, 3));
 
 end
 
-function visualiseTest
+function visualiseTest(testCase)
 
 % Create triangulation of unit sphere.
 [F, V] = sphTriang(3);
@@ -81,8 +89,8 @@ alpha = 1;
 deg = 7;
 
 u = ofish(N, Ns, c, F, V, f1, f2, h, deg, alpha);
-assertFalse(isempty(u));
-assertEqual(size(u), [m, 3]);
+verifyFalse(testCase, isempty(u));
+verifyEqual(testCase, size(u), [m, 3]);
 
 % Create two images.
 Ynj = spharm(5, V);
@@ -93,14 +101,14 @@ f2 = Ynj(:, 3);
 
 % % Compare to other optical flow implementation.
 v = of(N, F, V, f1, f2, h, alpha);
-assertFalse(isempty(v));
-assertEqual(size(v), [m, 3]);
+verifyFalse(testCase, isempty(v));
+verifyEqual(testCase, size(v), [m, 3]);
 % Compute residual.
 [res, ~] = residual(v, F, V, f1, f2, 1e-6);
 fprintf('Residual: %f.\n', res);
 
 % Check if flow is almost equal.
-assertAlmostEqual(u, v, 0.1);
+verifyEqual(testCase, u, v, 'AbsTol', 0.1);
 
 TR = TriRep(F, V);
 P = TR.incenters;

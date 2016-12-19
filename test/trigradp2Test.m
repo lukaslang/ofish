@@ -18,7 +18,15 @@ function test_suite = trigradp2Test
     initTestSuite;
 end
 
-function resultTest
+function setupOnce(testCase)
+    cd('../');
+end
+
+function teardownOnce(testCase)
+    cd('test');
+end
+
+function resultTest(testCase)
 
 % Generate icosahedron.
 [F, V] = sphTriang;
@@ -49,7 +57,7 @@ assertEqual(size(g), [20, 3, nq]);
 
 end
 
-function visualiseTest
+function visualiseTest(testCase)
 
 % Generate spherical triangulation.
 [F, V] = sphTriang(3);

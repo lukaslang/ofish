@@ -14,11 +14,19 @@
 %
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
-function test_suite = surfmapTest
-    initTestSuite;
+function tests = surfmapTest
+    tests = functiontests(localfunctions);
 end
 
-function resultTest
+function setupOnce(testCase)
+    cd('../');
+end
+
+function teardownOnce(testCase)
+    cd('test');
+end
+
+function resultTest(testCase)
 
 % Generate icosahedron.
 [F, V] = sphTriang;
@@ -28,33 +36,33 @@ m = size(F, 1);
 rho = ones(m, 6);
 
 x = surfmap(F, V, rho, zeros(m, 2));
-assertFalse(isempty(x));
-assertEqual(size(x), [m, 3]);
-assertAlmostEqual(x, V(F(:, 1), :));
+verifyFalse(testCase, isempty(x));
+verifyEqual(testCase, size(x), [m, 3]);
+verifyEqual(testCase, x, V(F(:, 1), :));
 
 x = surfmap(F, V, rho, [ones(m, 1), zeros(m, 1)]);
-assertFalse(isempty(x));
-assertEqual(size(x), [m, 3]);
-assertAlmostEqual(x, V(F(:, 3), :));
+verifyFalse(testCase, isempty(x));
+verifyEqual(testCase, size(x), [m, 3]);
+verifyEqual(testCase, x, V(F(:, 3), :));
 
 x = surfmap(F, V, rho, [zeros(m, 1), ones(m, 1)]);
-assertFalse(isempty(x));
-assertEqual(size(x), [m, 3]);
-assertAlmostEqual(x, V(F(:, 2), :));
+verifyFalse(testCase, isempty(x));
+verifyEqual(testCase, size(x), [m, 3]);
+verifyEqual(testCase, x, V(F(:, 2), :));
 
 xi(:, :, 1) = zeros(m, 2);
 xi(:, :, 2) = [ones(m, 1), zeros(m, 1)];
 xi(:, :, 3) = [zeros(m, 1), ones(m, 1)];
 x = surfmap(F, V, rho, xi);
-assertFalse(isempty(x));
-assertEqual(size(x), [m, 3, 3]);
-assertAlmostEqual(x(:, :, 1), V(F(:, 1), :));
-assertAlmostEqual(x(:, :, 2), V(F(:, 3), :));
-assertAlmostEqual(x(:, :, 3), V(F(:, 2), :));
+verifyFalse(testCase, isempty(x));
+verifyEqual(testCase, size(x), [m, 3, 3]);
+verifyEqual(testCase, x(:, :, 1), V(F(:, 1), :));
+verifyEqual(testCase, x(:, :, 2), V(F(:, 3), :));
+verifyEqual(testCase, x(:, :, 3), V(F(:, 2), :));
 
 end
 
-function sphereWithRadiusTwoTest
+function sphereWithRadiusTwoTest(testCase)
 
 % Generate icosahedron.
 [F, V] = sphTriang;
@@ -64,23 +72,23 @@ m = size(F, 1);
 rho = 2 * ones(m, 6);
 
 x = surfmap(F, V, rho, zeros(m, 2));
-assertFalse(isempty(x));
-assertEqual(size(x), [m, 3]);
-assertAlmostEqual(x, 2 * V(F(:, 1), :));
+verifyFalse(testCase, isempty(x));
+verifyEqual(testCase, size(x), [m, 3]);
+verifyEqual(testCase, x, 2 * V(F(:, 1), :));
 
 x = surfmap(F, V, rho, [ones(m, 1), zeros(m, 1)]);
-assertFalse(isempty(x));
-assertEqual(size(x), [m, 3]);
-assertAlmostEqual(x, 2 * V(F(:, 3), :));
+verifyFalse(testCase, isempty(x));
+verifyEqual(testCase, size(x), [m, 3]);
+verifyEqual(testCase, x, 2 * V(F(:, 3), :));
 
 x = surfmap(F, V, rho, [zeros(m, 1), ones(m, 1)]);
-assertFalse(isempty(x));
-assertEqual(size(x), [m, 3]);
-assertAlmostEqual(x, 2 * V(F(:, 2), :));
+verifyFalse(testCase, isempty(x));
+verifyEqual(testCase, size(x), [m, 3]);
+verifyEqual(testCase, x, 2 * V(F(:, 2), :));
 
 end
 
-function sphereWithRadiusTwoVisualiseTest
+function sphereWithRadiusTwoVisualiseTest(testCase)
 
 % Generate icosahedron.
 [F, V] = sphTriang(3);
@@ -90,9 +98,9 @@ m = size(F, 1);
 rho = 2 * ones(m, 6);
 
 x = surfmap(F, V, rho, ones(m, 2) ./ 3);
-assertFalse(isempty(x));
-assertEqual(size(x), [m, 3]);
-assertAlmostEqual(sqrt(sum(x.^2, 2)), 2*ones(m, 1), 0.01);
+verifyFalse(testCase, isempty(x));
+verifyEqual(testCase, size(x), [m, 3]);
+verifyEqual(testCase, sqrt(sum(x.^2, 2)), 2*ones(m, 1), 'AbsTol', 0.01);
 
 % Plot surface.
 figure;

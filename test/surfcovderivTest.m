@@ -14,11 +14,19 @@
 %
 %    You should have received a copy of the GNU General Public License
 %    along with OFISH.  If not, see <http://www.gnu.org/licenses/>.
-function test_suite = surfcovderivTest
-    initTestSuite;
+function tests = surfcovderivTest
+    tests = functiontests(localfunctions);
 end
 
-function resultTest
+function setupOnce(testCase)
+    cd('../');
+end
+
+function teardownOnce(testCase)
+    cd('test');
+end
+
+function resultTest(testCase)
 
 % Generate icosahedron.
 [F, V] = sphTriang(3);
@@ -53,14 +61,14 @@ dim = size(Y, 2);
 
 % Compute covariant derivative.
 [Z11, Z12, Z21, Z22] = surfcovderiv(G, g, A, Y, DY, xi);
-assertEqual(size(Z11), [m, dim, nq]);
-assertEqual(size(Z12), [m, dim, nq]);
-assertEqual(size(Z21), [m, dim, nq]);
-assertEqual(size(Z22), [m, dim, nq]);
+verifyEqual(testCase, size(Z11), [m, dim, nq]);
+verifyEqual(testCase, size(Z12), [m, dim, nq]);
+verifyEqual(testCase, size(Z21), [m, dim, nq]);
+verifyEqual(testCase, size(Z22), [m, dim, nq]);
 
 end
 
-function visualiseTest
+function visualiseTest(testCase)
 
 % Generate icosahedron.
 [F, V] = sphTriang(4);
@@ -171,7 +179,7 @@ for k=1:2*N+1
 end
 end
 
-function visualiseCovDerivTest
+function visualiseCovDerivTest(testCase)
 
 % Generate icosahedron.
 [F, V] = sphTriang(4);
