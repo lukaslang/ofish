@@ -18,20 +18,20 @@
 % This script sets up the paths of the libraries and adds all subfolders.
 
 % Set library path.
-libraryPath = 'Z:\libraries\';
+libraryPath = '../';
 
 % Export Figure is required for saving figures.
-addpath(genpath(fullfile(libraryPath, 'export_fig\')));
+addpath(genpath(fullfile(libraryPath, 'export_fig')));
 
 % Vol3d required for visualisation of volumetric data.
-addpath(genpath(fullfile(libraryPath, 'vol3d\')));
+addpath(genpath(fullfile(libraryPath, 'vol3d')));
 
 % Add OFD.
-ofdPath = 'Z:\git\ofd';
+ofdPath = '../ofd';
 addpath(ofdPath);
-addpath(genpath(fullfile(ofdPath, 'util\')));
-addpath(genpath(fullfile(ofdPath, 'colourwheel\')));
-addpath(genpath(fullfile(ofdPath, 'visualisation\')));
+addpath(genpath(fullfile(ofdPath, 'util')));
+addpath(genpath(fullfile(ofdPath, 'colourwheel')));
+addpath(genpath(fullfile(ofdPath, 'visualisation')));
 
 % Add all subfolders.
 y = dir('.');
